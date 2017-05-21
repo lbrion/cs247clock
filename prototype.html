@@ -4,13 +4,14 @@
 <link rel="stylesheet" href="main.css">
 <form></form>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="input.js"></script>
 <script>
 
   var myDuration = 600;
   var firstTime = true;
   
-  var width = 960,
-  height = 500,
+  var width = 300,
+  height = 200,
   radius = Math.min(width, height) / 2;
   var color = d3.scaleOrdinal(d3.schemeCategory20);
   var pie = d3.pie()
@@ -23,11 +24,19 @@
   .innerRadius(0)
   .outerRadius(radius);
 
-  var svg = d3.select("body").append("svg")
+  /*var svg = d3.select("body").append("svg")
   .attr("width", width)
   .attr("height", height)
   .append("g")
-  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");*/
+
+  var svg = d3.select("body").selectAll("svg")
+    .data(input)
+  .enter().append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
   function graph(data) {
     var regionsByFruit = d3.nest()
@@ -54,8 +63,6 @@
     .on("keydown", function() { 
       if (d3.event.keyCode == '37') {
         // left arrow
-        var path = svg.selectAll("path");
-        var data0 = path.data();
         var obj = {};
         if (current_index == 0) {         
           current_index = (current_index + 4 - 1) % 4;
@@ -79,8 +86,6 @@
 
       } else if (d3.event.keyCode == '39') {
         // right arrow
-        var path = svg.selectAll("path");
-        var data0 = path.data();
         var obj = {};
         current_index = (current_index + 1) % 4;
         obj["key"] = index_key[current_index];
@@ -198,40 +203,6 @@
   var BASE = 10.0;
   var count = 0;
 
-  input = [{
-    "region": "East",
-    "fruit": "Zero",
-    "count": "0"
-  }, {
-    "region": "West",
-    "fruit": "Zero",
-    "count": "100"
-  }, {
-    "region": "East",
-    "fruit": "One",
-    "count": "33"
-  }, {
-    "region": "West",
-    "fruit": "One",
-    "count": "66"
-  }, {
-    "region": "East",
-    "fruit": "Two",
-    "count": "66"
-  }, {
-    "region": "West",
-    "fruit": "Two",
-    "count": "33"
-  }, {
-    "region": "East",
-    "fruit": "Three",
-    "count": "100"
-  }, {
-    "region": "West",
-    "fruit": "Three",
-    "count": "0"
-  }]
-
   function incremement() {
     input = []
     count += 1
@@ -251,7 +222,7 @@
     graph(input);
   }
 
-  graph(input);
+  graph(input[0]);
 
 // Find the element in data0 that joins the highest preceding element in data1.
 function findPreceding(i, data0, data1, key) {
