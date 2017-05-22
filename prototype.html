@@ -30,16 +30,44 @@
   .attr("height", height)
   .append("g")
   .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");*/
+  function setdrag() {
+    var drag = d3.drag()
+      .subject(function(d) { return d; })
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
 
+    var center = {};
+    center.x = (width+margin) / 2;
+    center.y = (height + margin * 2) / 2;
+
+    function dragstarted(d) {
+      d3.event.sourceEvent.stopPropagation();
+      d3.select(this).classed("dragging", true);
+    }
+
+    function dragged(d) {
+      d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+    }
+
+    function dragended(d) {
+      d3.select(this).classed("dragging", false);
+    }
+
+    return drag;  
+  }
+
+  var drag = setdrag();
   var svg = d3.select("body").selectAll("svg")
     .data(input)
   .enter().append("svg")
     .attr("width", width + margin)
     .attr("height", height + margin * 2)
+    .call(drag)
     .append("g")
-    .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2 + margin) + ")");
+    .attr("transform", "translate(" + (width / 2 + margin / 2) + "," + (height / 2 + margin) + ")");
 
-  addTicks(10);
+  addTicks(3);
   function addTicks(base) {   
     var radians = 0.0174532925;
 
