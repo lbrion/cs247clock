@@ -76,15 +76,12 @@
       .attr('class', 'hour-label')
       .attr('text-anchor','middle')
       .attr('x',function(d){                
-        var x = radius * Math.sin(d * 360.0 / base * radians);
-        if (x > 10) return (x+10);
-        else if (x < -10) return (x-10);
+        var x = (radius+10) * Math.sin(d * 360.0 / base * radians);
         return x;
       })
       .attr('y',function(d){
-        var y = -radius * Math.cos(d * 360.0 / base * radians);
-        if (y > 80) return (y+10);
-        return y;
+        var y = -(radius+10) * Math.cos(d * 360.0 / base * radians);
+        return y+5;
       })
       .text(function(d){
         return d;
