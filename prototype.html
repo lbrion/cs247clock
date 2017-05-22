@@ -19,7 +19,7 @@
   .value(function(d) { return d.count; })
   .sort(null);
   var current_index = 0;
-  var index_key = ["0", "1", "2", "3", "4", "5", "6", "7"];
+  var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
   var arc = d3.arc()
   .innerRadius(0)
@@ -118,7 +118,7 @@
         // left arrow
         var obj = {};
         if (current_index == 0) {         
-          current_index = (current_index + BASE - 1) % BASE;
+          current_index = BASE;
           obj["key"] = index_key[current_index];
           obj["values"] = [data[current_index*2], data[current_index*2+1]];
           change(obj);
@@ -140,13 +140,13 @@
       } else if (d3.event.keyCode == '39') {
         // right arrow
         var obj = {};
-        current_index = (current_index + 1) % BASE;
+        current_index = (current_index + 1);
         obj["key"] = index_key[current_index];
         obj["values"] = [data[current_index*2], data[current_index*2+1]];
         change(obj);
         if (current_index == BASE) {
           setTimeout(function(){            
-            current_index = (current_index + 1) % BASE;
+            current_index = 0;
             obj["key"] = index_key[current_index];
             obj["values"] = [data[current_index*2], data[current_index*2+1]];
             change(obj);
