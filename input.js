@@ -35,7 +35,7 @@ var input = [[{
 
 function generateInput(n) {
   new_input_part = []
-  for(count = 0; count < n; count++) {
+  for(count = 0; count <= n; count++) {
     new_partial_full = {}
     new_partial_full["region"] = "East"
     new_partial_full["fruit"] = count.toString()
