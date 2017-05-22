@@ -35,32 +35,37 @@
     .data(input)
   .enter().append("svg")
     .attr("width", width + margin)
-    .attr("height", height + margin)
+    .attr("height", height + margin * 2)
     .append("g")
     .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2 + margin) + ")");
 
-  var radians = 0.0174532925;
-  var hourScale = d3.scaleLinear()
-      .range([0,330])
+  addTicks(3);
+  function addTicks(base) {   
+    var radians = 0.0174532925;
+    var hourScale = d3.scaleLinear()
+        .range([0,330])
 
-  svg.selectAll('.hour-label')
-  .data(generateLabel(3))
-    .enter()
-    .append('text')
-    .attr('class', 'hour-label')
-    .attr('text-anchor','middle')
-    .attr('x',function(d){                
-      var x = -radius * Math.sin(hourScale(d)*radians*12.0 / 3);
-      console.log(x);
-      if (x > 0) return (x+10);
-      else return (x-10);
-    })
-    .attr('y',function(d){
-      return -radius * Math.cos(hourScale(d)*radians*12.0 / 3);
-    })
-    .text(function(d){
-      return d;
-    });
+    svg.selectAll('.hour-label')
+    .data(generateLabel(base))
+      .enter()
+      .append('text')
+      .attr('class', 'hour-label')
+      .attr('text-anchor','middle')
+      .attr('x',function(d){                
+        var x = radius * Math.sin(hourScale(d*12.0 / base)*radians);
+        if (x > 10) return (x+10);
+        else if (x < -10) return (x-10);
+        return x;
+      })
+      .attr('y',function(d){
+        var y = -radius * Math.cos(hourScale(d*12.0 / base)*radians);
+        if (y > 80) return (y+10);
+        return y;
+      })
+      .text(function(d){
+        return d;
+      });
+    }
 
   function graph(data) {
     var regionsByFruit = d3.nest()
