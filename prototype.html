@@ -7,7 +7,7 @@
 <script src="input.js"></script>
 <script>
 
-  var myDuration = 600;
+  var myDuration = 300;
   var firstTime = true;
   
   var width = 300,
@@ -73,7 +73,7 @@
           obj["key"] = index_key[current_index];
           obj["values"] = [data[current_index*2], data[current_index*2+1]];
           change(obj);
-        }, 610);
+        }, myDuration + 10);
       } else {          
         current_index = (current_index + BASE - 1) % BASE;
         obj["key"] = index_key[current_index];
@@ -94,7 +94,7 @@
           obj["key"] = index_key[current_index];
           obj["values"] = [data[current_index*2], data[current_index*2+1]];
           change(obj);
-        }, 610);
+        }, myDuration + 10);
       }
     }
 
