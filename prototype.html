@@ -52,7 +52,7 @@
       .attr('class', 'hour-label')
       .attr('text-anchor','middle')
       .attr('x',function(d){                
-        var x = radius * Math.sin(hourScale(d*12.0 / base)*radians);
+        var x = -radius * Math.sin(hourScale(d*12.0 / base)*radians);
         if (x > 10) return (x+10);
         else if (x < -10) return (x-10);
         return x;
