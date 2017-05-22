@@ -25,49 +25,21 @@
   .innerRadius(0)
   .outerRadius(radius);
 
-  function setdrag() {
-    var drag = d3.drag()
-      .subject(function(d) { return d; })
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
-
-    var center = {};
-    center.x = (width+margin) / 2;
-    center.y = (height + margin * 2) / 2;
-
-    function dragstarted(d) {
-      d3.event.sourceEvent.stopPropagation();
-      d3.select(this).classed("dragging", true);
-    }
-
-    function dragged(d) {
-      d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
-    }
-
-    function dragended(d) {
-      d3.select(this).classed("dragging", false);
-    }
-
-    return drag;  
-  }
-  var BASE = 5.0;
+  var BASE = 8.0;
 
   input = generateInput(BASE)
 
-  var drag = setdrag();
   var svg = d3.select("body").selectAll("svg")
     .data(input)
     .enter().append("svg")
     .attr("width", width + margin)
     .attr("height", height + margin * 2)
-    .call(drag)
     .append("g")
     .attr("transform", "translate(" + (width / 2 + margin / 2) + "," + (height / 2 + margin) + ")");
 
   addTicks(BASE);
-  function addTicks(base) {   
-    var radians = 0.0174532925;
+  function addTicks(base) {
+    var radians = 0.0174532925;  
 
     svg.selectAll('.hour-label')
     .data(generateLabel(base))
@@ -89,6 +61,116 @@
     }
 
   function graph(data) {
+    function goBackByOne() {
+      var obj = {};
+      if (current_index == 0) {         
+        current_index = BASE;
+        obj["key"] = index_key[current_index];
+        obj["values"] = [data[current_index*2], data[current_index*2+1]];
+        change(obj);
+        setTimeout(function(){            
+          current_index = (current_index + BASE - 1) % BASE;
+          obj["key"] = index_key[current_index];
+          obj["values"] = [data[current_index*2], data[current_index*2+1]];
+          change(obj);
+        }, 610);
+      } else {          
+        current_index = (current_index + BASE - 1) % BASE;
+        obj["key"] = index_key[current_index];
+        obj["values"] = [data[current_index*2], data[current_index*2+1]];
+        change(obj);
+      }      
+    }
+
+    function incrementByOne() {
+      var obj = {};
+      current_index = (current_index + 1);
+      obj["key"] = index_key[current_index];
+      obj["values"] = [data[current_index*2], data[current_index*2+1]];
+      change(obj);
+      if (current_index == BASE) {
+        setTimeout(function(){            
+          current_index = 0;
+          obj["key"] = index_key[current_index];
+          obj["values"] = [data[current_index*2], data[current_index*2+1]];
+          change(obj);
+        }, 610);
+      }
+    }
+
+    function switchToIndex(index) {
+      var obj = {};
+      current_index = index;
+      obj["key"] = index_key[current_index];
+      obj["values"] = [data[current_index*2], data[current_index*2+1]];
+      change(obj);
+    }
+
+    function setdrag() {
+      var drag = d3.drag()
+        .subject(function(d) { return d; })
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+
+      var center = {};
+      center.x = (width+margin) / 2;
+      center.y = (height + margin * 2) / 2;
+
+      var start = {};
+      start.x = center.x;
+      start.y = 0;
+
+      // point1: start point, point2: center, point3: end point
+      function getAngle(point1, point2, point3) {
+          var bb = (point2.y - point1.y)*(point2.y - point1.y) + (point2.x - point1.x)*(point2.x - point1.x);
+          var aa = (point3.y - point1.y)*(point3.y - point1.y) + (point3.x - point1.x)*(point3.x - point1.x);
+          var cc = (point3.y - point2.y)*(point3.y - point2.y) + (point3.x - point2.x)*(point3.x - point2.x);
+          var cosa = (bb + cc - aa)/(2*Math.sqrt(bb)*Math.sqrt(cc));
+          return Math.acos(cosa);
+      }
+
+      // point1: center, point2: start, point3: center
+      function duration(point1, point2, point3) {
+          var sp = (point1.x-point3.x)*(point2.y-point3.y)-(point1.y-point3.y)*(point2.x-point3.x);
+          if(sp > 0) { // clockwise
+              return 1;
+          } else if(sp < 0) {// counter clockwise
+              return -1;
+          } else {
+              return 0;
+          }
+      }
+
+      function dragstarted(d) {
+        d3.event.sourceEvent.stopPropagation();
+        d3.select(this).classed("dragging", true);
+      }
+
+      function dragged(d) {
+        function toDegrees (angle) {
+          return angle * (180 / Math.PI);
+        }
+
+        var angle = getAngle(start, center, d3.event);
+        degree = toDegrees(angle);
+        if (d3.event.x < center.x) {
+          degree = 360 - degree;
+        } 
+        var index = degree * 1.0 / (360.0 / BASE);
+        switchToIndex(Math.round(index));
+      }
+
+      function dragended(d) {
+        d3.select(this).classed("dragging", false);
+      }
+
+      return drag;  
+    };
+
+    var drag = setdrag();
+    svg.call(drag);
+
     var regionsByFruit = d3.nest()
     .key(function(d) { return d.fruit; })
     .entries(data);
@@ -113,42 +195,13 @@
     .on("keydown", function() { 
       if (d3.event.keyCode == '37') {
         // left arrow
-        var obj = {};
-        if (current_index == 0) {         
-          current_index = BASE;
-          obj["key"] = index_key[current_index];
-          obj["values"] = [data[current_index*2], data[current_index*2+1]];
-          change(obj);
-          setTimeout(function(){            
-            current_index = (current_index + BASE - 1) % BASE;
-            obj["key"] = index_key[current_index];
-            obj["values"] = [data[current_index*2], data[current_index*2+1]];
-            change(obj);
-          }, 610);
-        } else {          
-          current_index = (current_index + BASE - 1) % BASE;
-          obj["key"] = index_key[current_index];
-          obj["values"] = [data[current_index*2], data[current_index*2+1]];
-          change(obj);
-        }
+        goBackByOne();
       } else if (d3.event.keyCode == '38') {
         // up arrow
 
       } else if (d3.event.keyCode == '39') {
         // right arrow
-        var obj = {};
-        current_index = (current_index + 1);
-        obj["key"] = index_key[current_index];
-        obj["values"] = [data[current_index*2], data[current_index*2+1]];
-        change(obj);
-        if (current_index == BASE) {
-          setTimeout(function(){            
-            current_index = 0;
-            obj["key"] = index_key[current_index];
-            obj["values"] = [data[current_index*2], data[current_index*2+1]];
-            change(obj);
-          }, 610);
-        }
+        incrementByOne();
       } else if (d3.event.keyCode == '40') {
         // down arrow
         
