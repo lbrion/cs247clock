@@ -39,11 +39,9 @@
     .append("g")
     .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2 + margin) + ")");
 
-  addTicks(3);
+  addTicks(10);
   function addTicks(base) {   
     var radians = 0.0174532925;
-    var hourScale = d3.scaleLinear()
-        .range([0,330])
 
     svg.selectAll('.hour-label')
     .data(generateLabel(base))
@@ -52,13 +50,13 @@
       .attr('class', 'hour-label')
       .attr('text-anchor','middle')
       .attr('x',function(d){                
-        var x = -radius * Math.sin(hourScale(d*12.0 / base)*radians);
+        var x = radius * Math.sin(d * 360.0 / base * radians);
         if (x > 10) return (x+10);
         else if (x < -10) return (x-10);
         return x;
       })
       .attr('y',function(d){
-        var y = -radius * Math.cos(hourScale(d*12.0 / base)*radians);
+        var y = -radius * Math.cos(d * 360.0 / base * radians);
         if (y > 80) return (y+10);
         return y;
       })
