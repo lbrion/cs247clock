@@ -19,27 +19,24 @@
   .value(function(d) { return d.count; })
   .sort(null);
   var current_index = 0;
-  var index_key = ["Zero", "One", "Two", "Three"];
+  var index_key = ["0", "1", "2", "3", "4", "5", "6", "7"];
 
   var arc = d3.arc()
   .innerRadius(0)
   .outerRadius(radius);
 
-  /*var svg = d3.select("body").append("svg")
-  .attr("width", width)
-  .attr("height", height)
-  .append("g")
-  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");*/
+  var BASE = 5.0;
+
+  input = generateInput(BASE)
 
   var svg = d3.select("body").selectAll("svg")
     .data(input)
-  .enter().append("svg")
+    .enter().append("svg")
     .attr("width", width + margin)
     .attr("height", height + margin * 2)
     .append("g")
     .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2 + margin) + ")");
 
-  addTicks(10);
   function addTicks(base) {   
     var radians = 0.0174532925;
 
@@ -92,18 +89,18 @@
         // left arrow
         var obj = {};
         if (current_index == 0) {         
-          current_index = (current_index + 4 - 1) % 4;
+          current_index = (current_index + BASE - 1) % BASE;
           obj["key"] = index_key[current_index];
           obj["values"] = [data[current_index*2], data[current_index*2+1]];
           change(obj);
           setTimeout(function(){            
-            current_index = (current_index + 4 - 1) % 4;
+            current_index = (current_index + BASE - 1) % BASE;
             obj["key"] = index_key[current_index];
             obj["values"] = [data[current_index*2], data[current_index*2+1]];
             change(obj);
           }, 610);
         } else {          
-          current_index = (current_index + 4 - 1) % 4;
+          current_index = (current_index + BASE - 1) % BASE;
           obj["key"] = index_key[current_index];
           obj["values"] = [data[current_index*2], data[current_index*2+1]];
           change(obj);
@@ -114,13 +111,13 @@
       } else if (d3.event.keyCode == '39') {
         // right arrow
         var obj = {};
-        current_index = (current_index + 1) % 4;
+        current_index = (current_index + 1) % BASE;
         obj["key"] = index_key[current_index];
         obj["values"] = [data[current_index*2], data[current_index*2+1]];
         change(obj);
-        if (current_index == 3) {
+        if (current_index == BASE) {
           setTimeout(function(){            
-            current_index = (current_index + 1) % 4;
+            current_index = (current_index + 1) % BASE;
             obj["key"] = index_key[current_index];
             obj["values"] = [data[current_index*2], data[current_index*2+1]];
             change(obj);
@@ -217,40 +214,8 @@
 
   }
 
-  /**
-    region  fruit count
-    East  Apples  53245
-    West  Apples  28479
-    South Apples  19697
-    North Apples  24037
-    Central Apples  40245
-    East  Oranges 200
-    South Oranges 200
-    Central Oranges 200
-  **/
-
-  var BASE = 10.0;
-  var count = 0;
-
-  function incremement() {
-    input = []
-    count += 1
-    next_part = count / BASE * 1000
-    next_part_compliment = (1 - (count / BASE)) * 1000
-    input[0] = {
-      "region": "East",
-      "fruit": "Zero",
-      "count": String(next_part)
-    }
-    input[1] = {
-      "region": "East",
-      "fruit": "Zero",
-      "count": String(next_part_compliment)
-    }
-
-    graph(input);
-  }
-
+  addTicks(BASE);
+  
   graph(input[0]);
 
 // Find the element in data0 that joins the highest preceding element in data1.
