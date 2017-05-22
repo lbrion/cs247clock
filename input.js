@@ -124,6 +124,14 @@ function generateInput(n) {
   input = new_input
 }
 
+function generateLabel(n, base) {
+  var label = []
+  for (count = 0; count < n; count++) {
+    label.push(count);
+  }
+  return label;
+}
+
 var data = [
   [11975,  5871, 8916, 2868],
   [ 1951, 10048, 2060, 6171],
