@@ -43,7 +43,7 @@
 
   function addTicks(base) {
     var radians = 0.0174532925;  
-
+    svg.selectAll('.hour-label').remove();
     svg.selectAll('.hour-label')
     .data(generateLabel(base))
       .enter()
@@ -342,10 +342,24 @@ function cloneObj(obj) {
   }
   return o;
 }
+
+function changebase() {
+  BASE = document.getElementById('base').value;
+
+  input = generateInput(BASE);
+  //Can you just redraw the ticks? Everything else works now
+  addTicks(BASE);
+  
+  graph(input[0]);
+}
 </script>
 </head>
 
 <body>
+  <div> 
+   <input id="base"></input>
+   <button onclick="changebase()">Change</button>
+  </div>
   <div class="row">
     <div class="col-md-4" id="clock1"></div>
     <div class="col-md-4" id="clock2"></div>
