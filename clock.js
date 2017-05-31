@@ -11,7 +11,7 @@ var pie = d3.pie()
 .value(function(d) { return d.count; })
 .sort(null);
  
-var current_index = 0;
+var current_index = [0, 0, 0];
 var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 var arc = d3.arc()
@@ -29,24 +29,56 @@ graph(input[0], "2");
 
 d3.select("body")
 .on("keydown", function() { 
-  if (d3.event.keyCode == '37') {
+  if (d3.event.keyCode === 37) {
     // left arrow
     current_clock = (current_clock + 3 - 1) % 3;
     setBackground(current_clock);
-  } else if (d3.event.keyCode == '38') {
+  } else if (d3.event.keyCode === 38) {
     // up arrow
     var selected = "#clock" + current_clock.toString();
     var svg = d3.select(selected).selectAll("svg");
-    incrementByOne(svg, input[0]);
-  } else if (d3.event.keyCode == '39') {
+    incrementByOne(svg, input[0], current_clock);
+    setTimeout(function(){            
+      if (current_index[current_clock] === 0) {
+        if (current_clock !== 0) {
+          selected = "#clock" + (current_clock-1).toString();
+          svg = d3.select(selected).selectAll("svg");
+          incrementByOne(svg, input[0], current_clock-1);
+          setTimeout(function(){                      
+            if (current_index[current_clock-1] === 0 && current_clock !== 1) {
+              selected = "#clock" + (current_clock-2).toString();
+              svg = d3.select(selected).selectAll("svg");
+              incrementByOne(svg, input[0], current_clock-2);
+            }
+          }, myDuration + 15);
+        }
+      }
+    }, myDuration + 15);
+  } else if (d3.event.keyCode === 39) {
     // right arrow
     current_clock = (current_clock + 1) % 3;
     setBackground(current_clock);
-  } else if (d3.event.keyCode == '40') {
+  } else if (d3.event.keyCode === 40) {
     // down arrow
     var selected = "#clock" + current_clock.toString();
     var svg = d3.select(selected).selectAll("svg");
-    goBackByOne(svg, input[0]);
+    goBackByOne(svg, input[0], current_clock);
+    setTimeout(function(){
+      if (current_index[current_clock] == BASE-1){
+        if (current_clock !== 0) {
+          selected = "#clock" + (current_clock-1).toString();
+          svg = d3.select(selected).selectAll("svg");
+          goBackByOne(svg, input[0], current_clock-1);
+          setTimeout(function(){                      
+            if (current_index[current_clock-1] === BASE-1 && current_clock !== 1) {
+              selected = "#clock" + (current_clock-2).toString();
+              svg = d3.select(selected).selectAll("svg");
+              goBackByOne(svg, input[0], current_clock-2);
+            }
+          }, myDuration + 15);
+        }
+       }
+    }, myDuration+15);
   }
 });
 
@@ -234,6 +266,9 @@ function changebase() {
   graph(input[0], "0");
   graph(input[0], "1");
   graph(input[0], "2");
+
+  current_clock = 2;
+  current_index = [0, 0, 0];
 }
 
 function setBackground(index) {
@@ -248,38 +283,43 @@ function setBackground(index) {
   } 
 }
 
-function goBackByOne(svg, data) {
+function goBackByOne(svg, data, clock_index) {
   var obj = {};
-  if (current_index == 0) {         
-    current_index = BASE;
-    obj["key"] = index_key[current_index];
-    obj["values"] = [data[current_index*2], data[current_index*2+1]];
+  if (current_index[clock_index] == 0) {         
+    current_index[clock_index] = BASE;
+    temp = current_index[clock_index];
+    obj["key"] = index_key[temp];
+    obj["values"] = [data[temp*2], data[temp*2+1]];
     change(obj, svg);
     setTimeout(function(){            
-      current_index = (current_index + BASE - 1) % BASE;
-      obj["key"] = index_key[current_index];
-      obj["values"] = [data[current_index*2], data[current_index*2+1]];
+      current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
+      temp = current_index[clock_index];
+      obj["key"] = index_key[temp];
+      obj["values"] = [data[temp*2], data[temp*2+1]];
       change(obj, svg);
     }, myDuration + 10);
   } else {          
-    current_index = (current_index + BASE - 1) % BASE;
-    obj["key"] = index_key[current_index];
-    obj["values"] = [data[current_index*2], data[current_index*2+1]];
+    current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
+    temp = current_index[clock_index];
+    obj["key"] = index_key[temp];
+    obj["values"] = [data[temp*2], data[temp*2+1]];
     change(obj, svg);
   }      
 }
 
-function incrementByOne(svg, data) {
+function incrementByOne(svg, data, clock_index) {
   var obj = {};
-  current_index = (current_index + 1);
-  obj["key"] = index_key[current_index];
-  obj["values"] = [data[current_index*2], data[current_index*2+1]];
+  current_index[clock_index] = (current_index[clock_index] + 1);
+  temp = current_index[clock_index];
+  obj["key"] = index_key[temp];
+  obj["values"] = [data[temp*2], data[temp*2+1]];
   change(obj, svg);
-  if (current_index == BASE) {
+  if (temp == BASE) {
     setTimeout(function(){            
-      current_index = 0;
-      obj["key"] = index_key[current_index];
-      obj["values"] = [data[current_index*2], data[current_index*2+1]];
+      current_index[clock_index] = 0;
+      temp = current_index[clock_index]
+      obj["key"] = index_key[temp];
+      obj["values"] = [data[temp*2], data[temp*2+1]];
       change(obj, svg);
     }, myDuration + 10);
   }
@@ -288,9 +328,10 @@ function incrementByOne(svg, data) {
 
 function switchToIndex(index, svg, data) {
   var obj = {};
-  current_index = index;
-  obj["key"] = index_key[current_index];
-  obj["values"] = [data[current_index*2], data[current_index*2+1]];
+  current_index[current_clock] = index;
+  temp = current_index[current_clock]
+  obj["key"] = index_key[temp];
+  obj["values"] = [data[temp*2], data[temp*2+1]];
   change(obj, svg);
 }
 
