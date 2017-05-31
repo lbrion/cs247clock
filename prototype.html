@@ -9,6 +9,18 @@
 <form></form>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="input.js"></script>
+</head>
+
+<body>
+  <div> 
+   <input id="base"></input>
+   <button onclick="changebase()">Change</button>
+  </div>
+  <div class="row">
+    <div class="col-md-4" id="clock1"></div>
+    <div class="col-md-4" id="clock2"></div>
+    <div class="col-md-4" id="clock3"></div>
+  </div>
 <script>
 
   var myDuration = 300;
@@ -31,39 +43,43 @@
 
   var BASE = 8.0;
 
-  input = generateInput(BASE)
+  input = generateInput(BASE);
 
-  var svg = d3.select("body").selectAll("svg")
-    .data(input)
-    .enter().append("svg")
-    .attr("width", width + margin)
-    .attr("height", height + margin * 2)
-    .append("g")
-    .attr("transform", "translate(" + (width / 2 + margin / 2) + "," + (height / 2 + margin) + ")");
+  function graph(data, index) {
+    var selected = "#clock" + index;
+    d3.select(selected).selectAll("svg").remove();
+    var svg = d3.select(selected).selectAll("svg")
+      .data(input)
+      .enter().append("svg")
+      .attr("width", width + margin)
+      .attr("height", height + margin * 2)
+      .append("g")
+      .attr("transform", "translate(" + (width / 2 + margin / 2) + "," + (height / 2 + margin) + ")");
 
-  function addTicks(base) {
-    var radians = 0.0174532925;  
-    svg.selectAll('.hour-label').remove();
-    svg.selectAll('.hour-label')
-    .data(generateLabel(base))
-      .enter()
-      .append('text')
-      .attr('class', 'hour-label')
-      .attr('text-anchor','middle')
-      .attr('x',function(d){                
-        var x = (radius+10) * Math.sin(d * 360.0 / base * radians);
-        return x;
-      })
-      .attr('y',function(d){
-        var y = -(radius+10) * Math.cos(d * 360.0 / base * radians);
-        return y+5;
-      })
-      .text(function(d){
-        return d;
-      });
-    }
+    addTicks(BASE, svg);
 
-  function graph(data) {
+    function addTicks(base, svg) {
+      var radians = 0.0174532925;  
+      svg.selectAll('.hour-label').remove();
+      svg.selectAll('.hour-label')
+      .data(generateLabel(base))
+        .enter()
+        .append('text')
+        .attr('class', 'hour-label')
+        .attr('text-anchor','middle')
+        .attr('x',function(d){                
+          var x = (radius+10) * Math.sin(d * 360.0 / base * radians);
+          return x;
+        })
+        .attr('y',function(d){
+          var y = -(radius+10) * Math.cos(d * 360.0 / base * radians);
+          return y+5;
+        })
+        .text(function(d){
+          return d;
+        });
+      }
+
     function goBackByOne() {
       var obj = {};
       if (current_index == 0) {         
@@ -173,26 +189,7 @@
 
     var drag = setdrag();
     svg.call(drag);
-
-    var regionsByFruit = d3.nest()
-    .key(function(d) { return d.fruit; })
-    .entries(data);
-
-    var label = d3.select("form").selectAll("label")
-    .data(regionsByFruit)
-    .enter().append("label");
-
-    label.append("input")
-    .attr("type", "radio")
-    .attr("name", "fruit")
-    .attr("value", function(d) { return d.key; })
-    .on("change", change)
-    .filter(function(d, i) { return !i; })
-    .each(change)
-    .property("checked", true);
-
-    label.append("span")
-    .text(function(d) { return d.key; });
+    switchToIndex(0);
 
     d3.select("body")
     .on("keydown", function() { 
@@ -295,10 +292,8 @@
 
 
   }
-
-  addTicks(BASE);
   
-  graph(input[0]);
+  graph(input[0], "1");
 
 // Find the element in data0 that joins the highest preceding element in data1.
 function findPreceding(i, data0, data1, key) {
@@ -344,27 +339,13 @@ function cloneObj(obj) {
 }
 
 function changebase() {
-  BASE = document.getElementById('base').value;
+  BASE = parseInt(document.getElementById('base').value);
 
   input = generateInput(BASE);
-  //Can you just redraw the ticks? Everything else works now
-  addTicks(BASE);
   
-  graph(input[0]);
+  graph(input[0], "1");
 }
 </script>
-</head>
-
-<body>
-  <div> 
-   <input id="base"></input>
-   <button onclick="changebase()">Change</button>
-  </div>
-  <div class="row">
-    <div class="col-md-4" id="clock1"></div>
-    <div class="col-md-4" id="clock2"></div>
-    <div class="col-md-4" id="clock3"></div>
-  </div>
 </body>
 
 </html>
