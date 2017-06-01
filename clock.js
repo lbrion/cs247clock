@@ -5,6 +5,7 @@ var firstTime = true;
 var width = 200,
 height = 300,
 margin = 50,
+border = 2,
 radius = Math.min(width, height) / 2;
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 var pie = d3.pie()
@@ -50,16 +51,19 @@ d3.select("body")
               svg = d3.select(selected).selectAll("svg");
               incrementByOne(svg, input[0], current_clock-2);
             }
-          }, myDuration + 15);
+          }, myDuration*2 + 25);
         }
       }
-    }, myDuration + 15);
+    }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
     current_clock = (current_clock + 1) % 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
     // down arrow
+    if (current_index[0] === 0 && current_index[1] === 0 && current_index[2] === 0) {
+      return;
+    }
     var selected = "#clock" + current_clock.toString();
     var svg = d3.select(selected).selectAll("svg");
     goBackByOne(svg, input[0], current_clock);
@@ -78,7 +82,7 @@ d3.select("body")
           }, myDuration + 15);
         }
        }
-    }, myDuration+15);
+    }, myDuration + 15);
   }
 });
 
@@ -92,6 +96,11 @@ function graph(data, index) {
     .attr("height", height + margin * 2)
     .append("g")
     .attr("transform", "translate(" + (width / 2 + margin / 2) + "," + (height / 2 + margin) + ")");
+
+  var circle = svg.append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", radius+1);
 
   addTicks(BASE, svg);
 
@@ -290,20 +299,20 @@ function goBackByOne(svg, data, clock_index) {
     temp = current_index[clock_index];
     obj["key"] = index_key[temp];
     obj["values"] = [data[temp*2], data[temp*2+1]];
-    change(obj, svg);
+    change(obj, svg, myDuration, "East");
     setTimeout(function(){            
       current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
       temp = current_index[clock_index];
       obj["key"] = index_key[temp];
       obj["values"] = [data[temp*2], data[temp*2+1]];
-      change(obj, svg);
+      change(obj, svg, myDuration, "East");
     }, myDuration + 10);
   } else {          
     current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
     temp = current_index[clock_index];
     obj["key"] = index_key[temp];
     obj["values"] = [data[temp*2], data[temp*2+1]];
-    change(obj, svg);
+    change(obj, svg, myDuration, "East");
   }      
 }
 
@@ -313,14 +322,20 @@ function incrementByOne(svg, data, clock_index) {
   temp = current_index[clock_index];
   obj["key"] = index_key[temp];
   obj["values"] = [data[temp*2], data[temp*2+1]];
-  change(obj, svg);
+  change(obj, svg, myDuration, "East");
   if (temp == BASE) {
-    setTimeout(function(){            
-      current_index[clock_index] = 0;
+    setTimeout(function(){           
       temp = current_index[clock_index]
       obj["key"] = index_key[temp];
       obj["values"] = [data[temp*2], data[temp*2+1]];
-      change(obj, svg);
+      change(obj, svg, myDuration, "East");
+      setTimeout(function() {
+        current_index[clock_index] = 0;
+        temp = current_index[clock_index]
+        obj["key"] = index_key[temp];
+        obj["values"] = [data[temp*2], data[temp*2+1]];
+        change(obj, svg, 0, "West");  
+      }, myDuration + 10)
     }, myDuration + 10);
   }
 }
@@ -332,18 +347,18 @@ function switchToIndex(index, svg, data) {
   temp = current_index[current_clock]
   obj["key"] = index_key[temp];
   obj["values"] = [data[temp*2], data[temp*2+1]];
-  change(obj, svg);
+  change(obj, svg, myDuration, "East");
 }
 
-function change(region, svg) {
-  var path = svg.selectAll("path");
+function change(region, svg, duration, clockwise) {
+  var path = svg.selectAll('path')
   var data0 = path.data(),
   data1 = pie(region.values);
   path = path.data(data1, key);
 
   path
   .transition()
-  .duration(myDuration)
+  .duration(duration)
   .attrTween("d", arcTween)
 
   path
@@ -359,22 +374,21 @@ function change(region, svg) {
     }
   }) 
   .attr("fill", function(d,i) { 
-    if (d.data.region === "East") {
-      return "#de0063";
+    if (d.data.region === clockwise) {
+      return "#ff0080";
     } else {
-      return "#ffff00";
+      return "#ffffff";
     }
    return color(d.data.region)
  })
   .transition()
-  .duration(myDuration)
+  .duration(duration)
   .attrTween("d", arcTween)
-
 
   path
   .exit()
   .transition()
-  .duration(myDuration)
+  .duration(duration)
   .attrTween("d", function(d, index) {
 
     var currentIndex = this._previous.data.region;
