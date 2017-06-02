@@ -1,8 +1,8 @@
 
-var myDuration = 300;
+var myDuration = 200;
 var firstTime = true;
-
-var width = 200,
+var flag = true,
+width = 200,
 height = 300,
 margin = 50,
 border = 2,
@@ -14,6 +14,7 @@ var pie = d3.pie()
  
 var current_index = [0, 0, 0];
 var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+var lastKeyUpAt = 0;
 
 var arc = d3.arc()
 .innerRadius(0)
@@ -28,8 +29,15 @@ graph(input[0], "0");
 graph(input[0], "1");
 graph(input[0], "2");
 
+d3.select("body").on('keyup', function() {
+    if (d3.event.keyCode === 40) { 
+      lastKeyUpAt = new Date();
+      flag = false; 
+    }
+});
+
 d3.select("body")
-.on("keydown", function() { 
+.on("keydown", function() {  
   if (d3.event.keyCode === 37) {
     // left arrow
     current_clock = (current_clock + 3 - 1) % 3;
@@ -60,7 +68,13 @@ d3.select("body")
     current_clock = (current_clock + 1) % 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
-    // down arrow
+    // down arrow   
+    var keyDownAt = new Date();
+    setTimeout(function() {
+        if (+keyDownAt > +lastKeyUpAt){
+          flag = false;
+        }
+    }, 500);
     if (current_index[0] === 0 && current_index[1] === 0 && current_index[2] === 0) {
       return;
     }
@@ -205,16 +219,16 @@ function type(d) {
 
 function findNeighborArc(i, data0, data1, key) {
   var d;
-  if(d = findPreceding(i, data0, data1, key)) {
-
-    var obj = cloneObj(d)
-    obj.startAngle = d.endAngle;
-    return obj;
-
-  } else if(d = findFollowing(i, data0, data1, key)) {
+  if(d = findFollowing(i, data0, data1, key)) {
 
     var obj = cloneObj(d)
     obj.endAngle = d.startAngle;
+    return obj;
+
+  } else if(d = findPreceding(i, data0, data1, key)) {
+
+    var obj = cloneObj(d)
+    obj.startAngle = d.endAngle;
     return obj;
 
   }
@@ -324,18 +338,23 @@ function incrementByOne(svg, data, clock_index) {
   obj["values"] = [data[temp*2], data[temp*2+1]];
   change(obj, svg, myDuration, "East");
   if (temp == BASE) {
-    setTimeout(function(){           
+    setTimeout(function(){ 
+      var g = svg.selectAll("g");
+      g.selectAll("path").remove();
+      current_index[clock_index] = 0;    
+      switchToIndex(0, g, input[0]);
+      current_index[clock_index] = BASE;  
       temp = current_index[clock_index]
       obj["key"] = index_key[temp];
       obj["values"] = [data[temp*2], data[temp*2+1]];
-      change(obj, svg, myDuration, "East");
-      setTimeout(function() {
+      change(obj, svg, myDuration, "West"); 
+      setTimeout(function(){
         current_index[clock_index] = 0;
         temp = current_index[clock_index]
         obj["key"] = index_key[temp];
         obj["values"] = [data[temp*2], data[temp*2+1]];
-        change(obj, svg, 0, "West");  
-      }, myDuration + 10)
+        change(obj, svg, 0, "East");
+      }, myDuration + 10);
     }, myDuration + 10);
   }
 }
@@ -357,6 +376,14 @@ function change(region, svg, duration, clockwise) {
   path = path.data(data1, key);
 
   path
+  .attr("fill", function(d,i) { 
+    if (d.data.region === clockwise) {
+      return "#ff0080";
+    } else {
+      return "#ffffff";
+    }
+   return color(d.data.region)
+  })
   .transition()
   .duration(duration)
   .attrTween("d", arcTween)
@@ -380,12 +407,20 @@ function change(region, svg, duration, clockwise) {
       return "#ffffff";
     }
    return color(d.data.region)
- })
+  })
   .transition()
   .duration(duration)
   .attrTween("d", arcTween)
 
   path
+  .attr("fill", function(d,i) { 
+    if (d.data.region === clockwise) {
+      return "#ff0080";
+    } else {
+      return "#ffffff";
+    }
+   return color(d.data.region)
+  })
   .exit()
   .transition()
   .duration(duration)
