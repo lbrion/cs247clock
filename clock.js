@@ -1,5 +1,5 @@
 
-var myDuration = 200;
+var myDuration = 300;
 var firstTime = true;
 var flag = true,
 width = 200,
@@ -44,6 +44,13 @@ d3.select("body")
     setBackground(current_clock);
   } else if (d3.event.keyCode === 38) {
     // up arrow
+    if (current_index[0] === BASE-1 && current_clock === 0) {
+      return;
+    } else if (current_index[0] === BASE-1 && current_index[1] == BASE-1 && current_clock === 1) {
+      return;
+    } else if (current_index[0] === BASE-1 && current_index[1] == BASE-1 && current_index[2] == BASE-1 && current_clock === 2) {
+      return;
+    }
     var selected = "#clock" + current_clock.toString();
     var svg = d3.select(selected).selectAll("svg");
     incrementByOne(svg, input[0], current_clock);
@@ -75,7 +82,12 @@ d3.select("body")
           flag = false;
         }
     }, 500);
-    if (current_index[0] === 0 && current_index[1] === 0 && current_index[2] === 0) {
+
+    if (current_index[0] === 0 && current_clock === 0) {
+      return;
+    } else if (current_index[0] === 0 && current_index[1] === 0 && current_clock === 1) {
+      return;
+    } else if (current_index[0] === 0 && current_index[1] === 0 && current_index[2] === 0 && current_clock === 2) {
       return;
     }
     var selected = "#clock" + current_clock.toString();
@@ -415,7 +427,7 @@ function change(region, svg, duration, clockwise) {
   path
   .attr("fill", function(d,i) { 
     if (d.data.region === clockwise) {
-      return "#ff0080";
+      return "#9AB3AC";
     } else {
       return "#ffffff";
     }
