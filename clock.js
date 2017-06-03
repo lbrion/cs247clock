@@ -12,7 +12,7 @@ var pie = d3.pie()
 .value(function(d) { return d.count; })
 .sort(null);
  
-var current_index = [0, 0, 0];
+var current_index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 var lastKeyUpAt = 0;
 
@@ -23,14 +23,30 @@ var arc = d3.arc()
 var BASE = 60.0;
 var current_clock = 2;
 
-input = generateInput(BASE);
+input = generateInput(60.0);
 
-graph(input[0], "0");
-graph(input[0], "1");
-graph(input[0], "2");
+graph(input, input[0], "0", 60.0);
+graph(input, input[0], "1", 60.0);
+graph(input, input[0], "2", 60.0);
+setText("#clock-1-0", "1-0-total", 0, ["0 hours", "0 minutes", "0 seconds"]);
+setText("#clock-1-1", "1-1-total", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
+setBackground(current_clock);
 
-setText("#clock-1-0", 0, ["0 hours", "0 minutes", "0 seconds"]);
-setText("#clock-1-1", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
+input2 = generateInput(10.0);
+graph(input2, input2[0], "3", 10.0);
+graph(input2, input2[0], "4", 10.0);
+graph(input2, input2[0], "5", 10.0);
+setText("#clock-1-2", "1-2-total", 3, ["0 hundreds", "0 tens", "0 ones"], ["0 × 10\u00B2", "0 × 10\u00B9", "0 × 10\u2070"]);
+
+input3 = generateInput(5.0);
+graph(input3, input3[0], "6", 5.0);
+graph(input3, input3[0], "7", 5.0);
+graph(input3, input3[0], "8", 5.0);
+
+input4 = generateInput(5.0);
+graph(input4, input4[0], "9", 5.0);
+graph(input4, input4[0], "10", 5.0);
+graph(input4, input4[0], "11", 5.0);
 
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
@@ -76,12 +92,12 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       }
-      setText("#clock-1-0", 0, [
+      setText("#clock-1-0", "1-0-total", 0, [
         current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
       ]);
-      setText("#clock-1-1", 0, [
+      setText("#clock-1-1", "1-1-total", 0, [
         current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
@@ -130,12 +146,12 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       } 
-      setText("#clock-1-0", 0, [
+      setText("#clock-1-0", "1-0-total", 0, [
         current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
       ]);
-      setText("#clock-1-1", 0, [
+      setText("#clock-1-1", "1-1-total", 0, [
         current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
@@ -148,7 +164,7 @@ d3.select("body")
   }
 });
 
-function setText(id, start_index, texts, second_texts) {
+function setText(id, total_id, start_index, texts, second_texts) {
   for (i = start_index; i < start_index+3; i++){
     selected = "#clock" + i.toString();
     d3.select(id).selectAll(selected).selectAll("text").remove();
@@ -158,22 +174,22 @@ function setText(id, start_index, texts, second_texts) {
       .attr("transform", "translate(0," + (height / 2) + ")");
     textElements
       .append("tspan")
+        .attr('x', 0)
         .text(texts[i])
         .style("text-anchor", "middle");
     if (second_texts) {
       textElements
         .append("tspan")
-          .attr("dx", -40)
+          .attr('x', 0)
           .attr("dy", 20)
           .text(second_texts[i])
           .style("text-anchor", "middle");
     }
   }
-  document.getElementById("1-0-total").innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
-  document.getElementById("1-1-total").innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
+  document.getElementById(total_id).innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
 }
 
-function graph(data, index) {
+function graph(input, data, index, BASE) {
   var selected = "#clock" + index;
   d3.selectAll(selected).selectAll("svg").remove();
   var svg = d3.selectAll(selected).selectAll("svg")
@@ -194,7 +210,6 @@ function graph(data, index) {
   var drag = setdrag();
   svg.call(drag);
   switchToIndex(0, svg, data);
-  setBackground(2);
 
   function addTicks(base, svg) {
     var radians = 0.0174532925;  
