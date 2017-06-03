@@ -12,7 +12,7 @@ var pie = d3.pie()
 .value(function(d) { return d.count; })
 .sort(null);
  
-var current_index = [0, 0, 0];
+var current_index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 var lastKeyUpAt = 0;
 
@@ -23,13 +23,30 @@ var arc = d3.arc()
 var BASE = 60.0;
 var current_clock = 2;
 
-input = generateInput(BASE);
+input = generateInput(60.0);
 
-graph(input[0], "0");
-graph(input[0], "1");
-graph(input[0], "2");
+graph(input, input[0], "0", 60.0, false);
+graph(input, input[0], "1", 60.0, false);
+graph(input, input[0], "2", 60.0, false);
+setText("#clock-1-0", "1-0-total", 0, ["0 hours", "0 minutes", "0 seconds"]);
+setText("#clock-1-1", "1-1-total", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
+setBackground(current_clock);
 
-setText(["0 hours", "0 minutes", "0 seconds"]);
+input2 = generateInput(10.0);
+graph(input2, input2[0], "3", 10.0, true);
+graph(input2, input2[0], "4", 10.0, true);
+graph(input2, input2[0], "5", 10.0, true);
+setText("#clock-1-2", "1-2-total", 3, ["0 hundreds", "0 tens", "0 ones"], ["0 × 10\u00B2", "0 × 10\u00B9", "0 × 10\u2070"]);
+
+input3 = generateInput(5.0);
+graph(input3, input3[0], "6", 5.0, true);
+graph(input3, input3[0], "7", 5.0, true);
+graph(input3, input3[0], "8", 5.0, true);
+
+input4 = generateInput(5.0);
+graph(input4, input4[0], "9", 5.0, true);
+graph(input4, input4[0], "10", 5.0, true);
+graph(input4, input4[0], "11", 5.0, true);
 
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
@@ -45,7 +62,8 @@ d3.select("body")
   }
   if (d3.event.keyCode === 37) {
     // left arrow
-    current_clock = (current_clock + 3 - 1) % 3;
+    current_set = Math.floor(current_clock / 3);
+    current_clock = current_set * 3 + (current_clock + 3 - 1) % 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 38) {
     // up arrow
@@ -58,7 +76,7 @@ d3.select("body")
       return;
     }
     var selected = "#clock" + current_clock.toString();
-    var svg = d3.select(selected).selectAll("svg");
+    var svg = d3.selectAll(selected).selectAll("svg");
     incrementByOne(svg, input[0], current_clock);
     setTimeout(function(){            
       if (current_index[current_clock] === 0) {
@@ -75,15 +93,25 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       }
-      setText([
-        current_index[0].toString() + " hours",
+      setText("#clock-1-0", "1-0-total", 0, [
+        current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
+      ]);
+      setText("#clock-1-1", "1-1-total", 0, [
+        current_index[0].toString() + " hours  ",
+        current_index[1].toString() + " minutes",
+        current_index[2].toString() + " seconds",
+      ], [
+        current_index[0].toString() + " × 60\u00B2",
+        current_index[1].toString() + " × 60\u00B9",
+        current_index[2].toString() + " × 60\u2070",
       ]);
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
-    current_clock = (current_clock + 1) % 3;
+    current_set = Math.floor(current_clock / 3);
+    current_clock = (current_clock + 1) % 3 + current_set * 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
     // down arrow   
@@ -103,7 +131,7 @@ d3.select("body")
       return;
     }
     var selected = "#clock" + current_clock.toString();
-    var svg = d3.select(selected).selectAll("svg");
+    var svg = d3.selectAll(selected).selectAll("svg");
     goBackByOne(svg, input[0], current_clock);
     setTimeout(function(){
       if (current_index[current_clock] == BASE-1){
@@ -120,32 +148,60 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       } 
-      setText([
-        current_index[0].toString() + " hours",
+      setText("#clock-1-0", "1-0-total", 0, [
+        current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
+      ]);
+      setText("#clock-1-1", "1-1-total", 0, [
+        current_index[0].toString() + " hours  ",
+        current_index[1].toString() + " minutes",
+        current_index[2].toString() + " seconds",
+      ], [
+        current_index[0].toString() + " × 60\u00B2",
+        current_index[1].toString() + " × 60\u00B9",
+        current_index[2].toString() + " × 60\u2070",
       ]);
     }, myDuration*2 + 25);
   }
 });
 
-function setText(texts) {
-  for (i = 0; i < 3; i++){
+function setText(id, total_id, start_index, texts, second_texts) {
+  for (i = start_index; i < start_index+3; i++){
     selected = "#clock" + i.toString();
-    d3.select(selected).selectAll("text").remove();
-    d3.select(selected).selectAll("g")
-      .append("text").text(texts[i]);
-    textElements = d3.select(selected).selectAll("text")
-      .attr("transform", "translate(0," + (height / 2) + ")");;
-    textElements.style("text-anchor", "middle");
+    d3.select(id).selectAll(selected).selectAll("tspan").remove();
+    textElements = d3.select(id).selectAll(selected).selectAll("text");
+    if (textElements) {
+      d3.select(id).selectAll(selected).selectAll("g").append("text");
+      textElements = d3.select(id).selectAll(selected).selectAll("g").selectAll("text");
+    }
+    textElements
+      .append("tspan")
+        .attr("class", ".current")
+        .attr("x", 0)
+        .attr("y", height/2+5)
+        .attr("font-size", "1rem")
+        .text(texts[i - start_index])
+        .style("text-anchor", "middle");
+    if (second_texts) {
+      textElements
+        .append("tspan")
+          .attr("class", ".current")
+          .attr('x', 0)
+          .attr("y", height/2+5)
+          .attr("dy", 20)
+          .attr("font-size", "1rem")
+          .text(second_texts[i - start_index])
+          .style("text-anchor", "middle");
+    }
   }
-  document.getElementById("1-0-total").innerHTML = current_index[0]*BASE*BASE + current_index[1]*BASE + current_index[2] 
+  document.getElementById(total_id).innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
 }
 
-function graph(data, index) {
+function graph(input, data, index, BASE, flag) {
   var selected = "#clock" + index;
-  d3.select(selected).selectAll("svg").remove();
-  var svg = d3.select(selected).selectAll("svg")
+  d3.selectAll(selected).selectAll("svg").remove();
+  var svg = d3.selectAll(selected).selectAll("svg")
     .data(input)
     .enter().append("svg")
     .attr("width", width + margin)
@@ -156,14 +212,15 @@ function graph(data, index) {
   var circle = svg.append("circle")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", radius+1);
+    .attr("r", radius+2);
 
-  //addTicks(BASE, svg);
+  if (flag) {
+    addTicks(BASE, svg);
+  }
 
   var drag = setdrag();
   svg.call(drag);
   switchToIndex(0, svg, data);
-  setBackground(2);
 
   function addTicks(base, svg) {
     var radians = 0.0174532925;  
@@ -337,11 +394,11 @@ function changebase() {
 }
 
 function setBackground(index) {
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 12; i++) {
     var selected = "#clock" + i;
-    var svg = d3.select(selected).selectAll("svg");
+    var svg = d3.selectAll(selected).selectAll("svg");
     if (i === parseInt(index)) {
-      svg.attr("style", "background: #d3d3d3;");
+      svg.attr("style", "background: #ebfcf6;");
     } else {
       svg.attr("style", "background: white;");
     }
@@ -489,6 +546,31 @@ function change(region, svg, duration, clockwise) {
 
 
   firstTime = false;
-
-
 }
+
+function isElementOutViewport (el) {
+    var rect = el.getBoundingClientRect();
+    return rect.bottom < 0 || rect.right < 0 || rect.left > window.innerWidth || rect.top > window.innerHeight;
+}
+
+document.getElementById("content").onscroll = function() {
+  var clock_set_0 = document.getElementById("clock-1-0");
+  var clock_set_1 = document.getElementById("clock-1-1");
+  var clock_set_2 = document.getElementById("clock-1-2");
+  var clock_set_3 = document.getElementById("clock-2-0");
+  var clock_set_4 = document.getElementById("clock-3-0");
+  var clock_set_5 = document.getElementById("clock-5-0");
+  if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
+    current_clock = 2;
+    setBackground(2); 
+  } else if (!isElementOutViewport(clock_set_2)) {
+    current_clock = 5; 
+    setBackground(5); 
+  } else if (!isElementOutViewport(clock_set_3) || !isElementOutViewport(clock_set_4)) {
+    current_clock = 8;
+    setBackground(8);  
+  } else if (!isElementOutViewport(clock_set_5)) {
+    current_clock = 11; 
+    setBackground(11); 
+  } 
+};

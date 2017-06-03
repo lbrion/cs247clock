@@ -80,3 +80,11 @@ body {
     background: -moz-linear-gradient(#D3DDDA, #EBFCF6); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#D3DDDA, #EBFCF6); /* Standard syntax (must be last) */
 }
+
+body {
+  width: 100%;
+}
+
+h3 {
+  margin-top: 40px;
+}
