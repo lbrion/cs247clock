@@ -29,7 +29,8 @@ graph(input[0], "0");
 graph(input[0], "1");
 graph(input[0], "2");
 
-setText(["0 hours", "0 minutes", "0 seconds"]);
+setText("#clock-1-0", 0, ["0 hours", "0 minutes", "0 seconds"]);
+setText("#clock-1-1", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
 
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
@@ -75,10 +76,19 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       }
-      setText([
-        current_index[0].toString() + " hours",
+      setText("#clock-1-0", 0, [
+        current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
+      ]);
+      setText("#clock-1-1", 0, [
+        current_index[0].toString() + " hours  ",
+        current_index[1].toString() + " minutes",
+        current_index[2].toString() + " seconds",
+      ], [
+        current_index[0].toString() + " × 60\u00B2",
+        current_index[1].toString() + " × 60\u00B9",
+        current_index[2].toString() + " × 60\u2070",
       ]);
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
@@ -120,27 +130,47 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       } 
-      setText([
-        current_index[0].toString() + " hours",
+      setText("#clock-1-0", 0, [
+        current_index[0].toString() + " hours  ",
         current_index[1].toString() + " minutes",
         current_index[2].toString() + " seconds",
+      ]);
+      setText("#clock-1-1", 0, [
+        current_index[0].toString() + " hours  ",
+        current_index[1].toString() + " minutes",
+        current_index[2].toString() + " seconds",
+      ], [
+        current_index[0].toString() + " × 60\u00B2",
+        current_index[1].toString() + " × 60\u00B9",
+        current_index[2].toString() + " × 60\u2070",
       ]);
     }, myDuration*2 + 25);
   }
 });
 
-function setText(texts, second_texts) {
-  for (i = 0; i < 3; i++){
+function setText(id, start_index, texts, second_texts) {
+  for (i = start_index; i < start_index+3; i++){
     selected = "#clock" + i.toString();
-    d3.selectAll(selected).selectAll("text").remove();
-    d3.selectAll(selected).selectAll("g")
-      .append("text").text(texts[i]);
-    textElements = d3.selectAll(selected).selectAll("text")
+    d3.select(id).selectAll(selected).selectAll("text").remove();
+    d3.select(id).selectAll(selected).selectAll("g")
+      .append("text");
+    textElements = d3.select(id).selectAll(selected).selectAll("text")
       .attr("transform", "translate(0," + (height / 2) + ")");
-    textElements.style("text-anchor", "middle");
+    textElements
+      .append("tspan")
+        .text(texts[i])
+        .style("text-anchor", "middle");
+    if (second_texts) {
+      textElements
+        .append("tspan")
+          .attr("dx", -40)
+          .attr("dy", 20)
+          .text(second_texts[i])
+          .style("text-anchor", "middle");
+    }
   }
-  document.getElementById("1-0-total").innerHTML = current_index[0]*BASE*BASE + current_index[1]*BASE + current_index[2] 
-  document.getElementById("1-1-total").innerHTML = current_index[0]*BASE*BASE + current_index[1]*BASE + current_index[2] 
+  document.getElementById("1-0-total").innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
+  document.getElementById("1-1-total").innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
 }
 
 function graph(data, index) {
