@@ -29,6 +29,8 @@ graph(input[0], "0");
 graph(input[0], "1");
 graph(input[0], "2");
 
+setText(["0 hours", "0 minutes", "0 seconds"]);
+
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
       lastKeyUpAt = new Date();
@@ -37,13 +39,17 @@ d3.select("body").on('keyup', function() {
 });
 
 d3.select("body")
-.on("keydown", function() {  
+.on("keydown", function() { 
+  if (current_index[0] >= BASE || current_index[1] >= BASE || current_index[2] >= BASE){
+    return;
+  }
   if (d3.event.keyCode === 37) {
     // left arrow
     current_clock = (current_clock + 3 - 1) % 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 38) {
     // up arrow
+    d3.event.preventDefault();
     if (current_index[0] === BASE-1 && current_clock === 0) {
       return;
     } else if (current_index[0] === BASE-1 && current_index[1] == BASE-1 && current_clock === 1) {
@@ -69,6 +75,11 @@ d3.select("body")
           }, myDuration*2 + 25);
         }
       }
+      setText([
+        current_index[0].toString() + " hours",
+        current_index[1].toString() + " minutes",
+        current_index[2].toString() + " seconds",
+      ]);
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
@@ -76,6 +87,7 @@ d3.select("body")
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
     // down arrow   
+    d3.event.preventDefault();
     var keyDownAt = new Date();
     setTimeout(function() {
         if (+keyDownAt > +lastKeyUpAt){
@@ -107,10 +119,28 @@ d3.select("body")
             }
           }, myDuration*2 + 25);
         }
-       }
+      } 
+      setText([
+        current_index[0].toString() + " hours",
+        current_index[1].toString() + " minutes",
+        current_index[2].toString() + " seconds",
+      ]);
     }, myDuration*2 + 25);
   }
 });
+
+function setText(texts) {
+  for (i = 0; i < 3; i++){
+    selected = "#clock" + i.toString();
+    d3.select(selected).selectAll("text").remove();
+    d3.select(selected).selectAll("g")
+      .append("text").text(texts[i]);
+    textElements = d3.select(selected).selectAll("text")
+      .attr("transform", "translate(0," + (height / 2) + ")");;
+    textElements.style("text-anchor", "middle");
+  }
+  document.getElementById("1-0-total").innerHTML = current_index[0]*BASE*BASE + current_index[1]*BASE + current_index[2] 
+}
 
 function graph(data, index) {
   var selected = "#clock" + index;
@@ -128,7 +158,7 @@ function graph(data, index) {
     .attr("cy", 0)
     .attr("r", radius+1);
 
-  addTicks(BASE, svg);
+  //addTicks(BASE, svg);
 
   var drag = setdrag();
   svg.call(drag);
