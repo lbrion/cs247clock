@@ -58,7 +58,7 @@ d3.select("body")
       return;
     }
     var selected = "#clock" + current_clock.toString();
-    var svg = d3.select(selected).selectAll("svg");
+    var svg = d3.selectAll(selected).selectAll("svg");
     incrementByOne(svg, input[0], current_clock);
     setTimeout(function(){            
       if (current_index[current_clock] === 0) {
@@ -103,7 +103,7 @@ d3.select("body")
       return;
     }
     var selected = "#clock" + current_clock.toString();
-    var svg = d3.select(selected).selectAll("svg");
+    var svg = d3.selectAll(selected).selectAll("svg");
     goBackByOne(svg, input[0], current_clock);
     setTimeout(function(){
       if (current_index[current_clock] == BASE-1){
@@ -129,23 +129,24 @@ d3.select("body")
   }
 });
 
-function setText(texts) {
+function setText(texts, second_texts) {
   for (i = 0; i < 3; i++){
     selected = "#clock" + i.toString();
-    d3.select(selected).selectAll("text").remove();
-    d3.select(selected).selectAll("g")
+    d3.selectAll(selected).selectAll("text").remove();
+    d3.selectAll(selected).selectAll("g")
       .append("text").text(texts[i]);
-    textElements = d3.select(selected).selectAll("text")
-      .attr("transform", "translate(0," + (height / 2) + ")");;
+    textElements = d3.selectAll(selected).selectAll("text")
+      .attr("transform", "translate(0," + (height / 2) + ")");
     textElements.style("text-anchor", "middle");
   }
   document.getElementById("1-0-total").innerHTML = current_index[0]*BASE*BASE + current_index[1]*BASE + current_index[2] 
+  document.getElementById("1-1-total").innerHTML = current_index[0]*BASE*BASE + current_index[1]*BASE + current_index[2] 
 }
 
 function graph(data, index) {
   var selected = "#clock" + index;
-  d3.select(selected).selectAll("svg").remove();
-  var svg = d3.select(selected).selectAll("svg")
+  d3.selectAll(selected).selectAll("svg").remove();
+  var svg = d3.selectAll(selected).selectAll("svg")
     .data(input)
     .enter().append("svg")
     .attr("width", width + margin)
@@ -339,7 +340,7 @@ function changebase() {
 function setBackground(index) {
   for (var i = 0; i < 3; i++) {
     var selected = "#clock" + i;
-    var svg = d3.select(selected).selectAll("svg");
+    var svg = d3.selectAll(selected).selectAll("svg");
     if (i === parseInt(index)) {
       svg.attr("style", "background: #ebfcf6;");
     } else {
