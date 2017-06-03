@@ -25,28 +25,28 @@ var current_clock = 2;
 
 input = generateInput(60.0);
 
-graph(input, input[0], "0", 60.0);
-graph(input, input[0], "1", 60.0);
-graph(input, input[0], "2", 60.0);
+graph(input, input[0], "0", 60.0, false);
+graph(input, input[0], "1", 60.0, false);
+graph(input, input[0], "2", 60.0, false);
 setText("#clock-1-0", "1-0-total", 0, ["0 hours", "0 minutes", "0 seconds"]);
 setText("#clock-1-1", "1-1-total", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
 setBackground(current_clock);
 
 input2 = generateInput(10.0);
-graph(input2, input2[0], "3", 10.0);
-graph(input2, input2[0], "4", 10.0);
-graph(input2, input2[0], "5", 10.0);
+graph(input2, input2[0], "3", 10.0, true);
+graph(input2, input2[0], "4", 10.0, true);
+graph(input2, input2[0], "5", 10.0, true);
 setText("#clock-1-2", "1-2-total", 3, ["0 hundreds", "0 tens", "0 ones"], ["0 × 10\u00B2", "0 × 10\u00B9", "0 × 10\u2070"]);
 
 input3 = generateInput(5.0);
-graph(input3, input3[0], "6", 5.0);
-graph(input3, input3[0], "7", 5.0);
-graph(input3, input3[0], "8", 5.0);
+graph(input3, input3[0], "6", 5.0, true);
+graph(input3, input3[0], "7", 5.0, true);
+graph(input3, input3[0], "8", 5.0, true);
 
 input4 = generateInput(5.0);
-graph(input4, input4[0], "9", 5.0);
-graph(input4, input4[0], "10", 5.0);
-graph(input4, input4[0], "11", 5.0);
+graph(input4, input4[0], "9", 5.0, true);
+graph(input4, input4[0], "10", 5.0, true);
+graph(input4, input4[0], "11", 5.0, true);
 
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
@@ -169,21 +169,22 @@ d3.select("body")
 function setText(id, total_id, start_index, texts, second_texts) {
   for (i = start_index; i < start_index+3; i++){
     selected = "#clock" + i.toString();
-    d3.select(id).selectAll(selected).selectAll("text").remove();
-    d3.select(id).selectAll(selected).selectAll("g")
-      .append("text");
-    textElements = d3.select(id).selectAll(selected).selectAll("text")
-      .attr("transform", "translate(0," + (height / 2) + ")");
+    d3.select(id).selectAll(selected).selectAll("tspan").remove();
+    textElements = d3.select(id).selectAll(selected).selectAll("text");
     textElements
       .append("tspan")
+        .attr("class", ".current")
         .attr("x", 0)
+        .attr("y", height/2+5)
         .attr("font-size", "1rem")
         .text(texts[i - start_index])
         .style("text-anchor", "middle");
     if (second_texts) {
       textElements
         .append("tspan")
+          .attr("class", ".current")
           .attr('x', 0)
+          .attr("y", height/2+5)
           .attr("dy", 20)
           .attr("font-size", "1rem")
           .text(second_texts[i - start_index])
@@ -193,7 +194,7 @@ function setText(id, total_id, start_index, texts, second_texts) {
   document.getElementById(total_id).innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
 }
 
-function graph(input, data, index, BASE) {
+function graph(input, data, index, BASE, flag) {
   var selected = "#clock" + index;
   d3.selectAll(selected).selectAll("svg").remove();
   var svg = d3.selectAll(selected).selectAll("svg")
@@ -209,13 +210,17 @@ function graph(input, data, index, BASE) {
     .attr("cy", 0)
     .attr("r", radius+2);
 
-  //addTicks(BASE, svg);
+  if (flag) {
+    addTicks(BASE, svg, "000000");
+  } else {
+    addTicks(BASE, svg, "#ffffff");
+  }
 
   var drag = setdrag();
   svg.call(drag);
   switchToIndex(0, svg, data);
 
-  function addTicks(base, svg) {
+  function addTicks(base, svg, color) {
     var radians = 0.0174532925;  
     svg.selectAll('.hour-label').remove();
     svg.selectAll('.hour-label')
@@ -224,12 +229,13 @@ function graph(input, data, index, BASE) {
       .append('text')
       .attr('class', 'hour-label')
       .attr('text-anchor','middle')
+      .attr("fill", color)
       .attr('x',function(d){                
-        var x = (radius+10) * Math.sin(d * 360.0 / base * radians);
+        var x = (radius+12) * Math.sin(d * 360.0 / base * radians);
         return x;
       })
       .attr('y',function(d){
-        var y = -(radius+10) * Math.cos(d * 360.0 / base * radians);
+        var y = -(radius+12) * Math.cos(d * 360.0 / base * radians);
         return y+5;
       })
       .text(function(d){
