@@ -11,10 +11,11 @@
    top: 0%;
    left: 50%;  */
    overflow-y: scroll;
-   height: 804px;
+   height: 100%;
 }
 
 .border-left {
+   margin-top: 140px;
    margin-left: 60px;
    margin-right: 30px;
    background: white;
@@ -23,7 +24,7 @@
 .border-right {
    padding-top: 140px;
    margin-right: 60px;
-   height: 804px;
+   height: 100%;
    background: white; /* For browsers that do not support gradients */
    background: -webkit-linear-gradient(#9AB3AC, #D0F8E8); /* For Safari 5.1 to 6.0 */
    background: -o-linear-gradient(#9AB3AC, #D0F8E8); /* For Opera 11.1 to 12.0 */
@@ -50,12 +51,29 @@
    color: #FFFFFF;
 }
 
+.subsection h2 {
+   font-family: "Open-Sans", Arial, Sans-serif;
+   font-size: 35px;
+   color: #728F87;
+}
+
+.subsection p {
+   font-family: "Open-Sans", Arial, Sans-serif;
+   font-size: 20px;
+}
+
 .subsection {
-   height: 800px;
+}
+
+body {
+   width: 100%;
+   margin: 0;
+   height: 100%;
 }
 
 .main {
-    height: 804px;
+    width: 100%;
+    min-height: 100vh;
     background: white; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(#D3DDDA, #EBFCF6); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(#D3DDDA, #EBFCF6); /* For Opera 11.1 to 12.0 */
