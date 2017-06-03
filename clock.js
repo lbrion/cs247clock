@@ -62,7 +62,8 @@ d3.select("body")
   }
   if (d3.event.keyCode === 37) {
     // left arrow
-    current_clock = (current_clock + 3 - 1) % 3;
+    current_set = Math.floor(current_clock / 3);
+    current_clock = current_set * 3 + (current_clock + 3 - 1) % 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 38) {
     // up arrow
@@ -109,7 +110,8 @@ d3.select("body")
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
-    current_clock = (current_clock + 1) % 3;
+    current_set = Math.floor(current_clock / 3);
+    current_clock = (current_clock + 1) % 3 + current_set * 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
     // down arrow   
@@ -174,15 +176,17 @@ function setText(id, total_id, start_index, texts, second_texts) {
       .attr("transform", "translate(0," + (height / 2) + ")");
     textElements
       .append("tspan")
-        .attr('x', 0)
-        .text(texts[i])
+        .attr("x", 0)
+        .attr("font-size", "1rem")
+        .text(texts[i - start_index])
         .style("text-anchor", "middle");
     if (second_texts) {
       textElements
         .append("tspan")
           .attr('x', 0)
           .attr("dy", 20)
-          .text(second_texts[i])
+          .attr("font-size", "1rem")
+          .text(second_texts[i - start_index])
           .style("text-anchor", "middle");
     }
   }
@@ -383,7 +387,7 @@ function changebase() {
 }
 
 function setBackground(index) {
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 12; i++) {
     var selected = "#clock" + i;
     var svg = d3.selectAll(selected).selectAll("svg");
     if (i === parseInt(index)) {
@@ -535,6 +539,31 @@ function change(region, svg, duration, clockwise) {
 
 
   firstTime = false;
-
-
 }
+
+function isElementOutViewport (el) {
+    var rect = el.getBoundingClientRect();
+    return rect.bottom < 0 || rect.right < 0 || rect.left > window.innerWidth || rect.top > window.innerHeight;
+}
+
+document.getElementById("content").onscroll = function() {
+  var clock_set_0 = document.getElementById("clock-1-0");
+  var clock_set_1 = document.getElementById("clock-1-1");
+  var clock_set_2 = document.getElementById("clock-1-2");
+  var clock_set_3 = document.getElementById("clock-2-0");
+  var clock_set_4 = document.getElementById("clock-3-0");
+  var clock_set_5 = document.getElementById("clock-5-0");
+  if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
+    current_clock = 2;
+    setBackground(2); 
+  } else if (!isElementOutViewport(clock_set_2)) {
+    current_clock = 5; 
+    setBackground(5); 
+  } else if (!isElementOutViewport(clock_set_3) || !isElementOutViewport(clock_set_4)) {
+    current_clock = 8;
+    setBackground(8);  
+  } else if (!isElementOutViewport(clock_set_5)) {
+    current_clock = 11; 
+    setBackground(11); 
+  } 
+};
