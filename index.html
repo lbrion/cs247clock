@@ -5,9 +5,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<link rel="stylesheet" href="./bootstrap-3.3.7-dist/bootstrap.min.css">
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="index.css">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="input.js"></script>
 </head>
 
 <body>
@@ -48,7 +49,11 @@
                 <div class="section-content">
                     <h2>We are already familiar with representing time in <u>base 60</u></h2>
                     <div class="clock" id="clock-1-0">
-                        <p>Insert clock here lol</p>
+                        <div class="row">
+                            <div class="col-md-4" id="clock0"></div>
+                            <div class="col-md-4" id="clock1"></div>
+                            <div class="col-md-4" id="clock2"></div>
+                        </div>
                     </div>
                     <div class="instructions">
                         <span class="row">
@@ -277,6 +282,7 @@
             <h3>Created by Jackie, Louis, and Shutong</h3>
         </div>
     </span>
+    <script src="clock.js"> </script>
 </body>
 
 </html>

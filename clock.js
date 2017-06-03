@@ -2,9 +2,9 @@
 var myDuration = 300;
 var firstTime = true;
 var flag = true,
-width = 200,
-height = 300,
-margin = 50,
+width = 150,
+height = 200,
+margin = 30,
 border = 2,
 radius = Math.min(width, height) / 2;
 var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -20,7 +20,7 @@ var arc = d3.arc()
 .innerRadius(0)
 .outerRadius(radius);
 
-var BASE = 8.0;
+var BASE = 60.0;
 var current_clock = 2;
 
 input = generateInput(BASE);
