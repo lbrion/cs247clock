@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Learning base</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Quicksand" />
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway" />
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans" />
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="input.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <span class="row">
+            <div id="content" class="col-md-8 leftcol">
+                <div class="border-left">
+                    <div class="top-navigation">
+                        <span class="row">
+                            <div class="col-md-2"><a href="./index-5.html">6</a></div>
+                            <div class="col-md-2"><a href="./index-4.html">5</a></div>
+                            <div class="col-md-2"><a href="./index-3.html">4</a></div>
+                            <div class="col-md-2"><a href="./index-2.html">3</a></div>
+                            <div class="col-md-2"><a href="./index-1.html">2</a></div>
+                            <div class="col-md-2"><a href="./index-0.html">1</a></div>
+                        </span>
+                    </div>
+                    <div class="subsection" id="3-0">
+                        <div class="section-header text-center">
+                            <h1>Converting between bases</h1>
+                        </div>
+                        <div class="section-content">
+                            <h2>We can easily convert from other bases to base 10.</h2>
+                            <p><b>First,</b> note down how many ticks are shown in each circle of base 3.</p>
+                            <div class="clock" id="clock-3-0">
+                                <p>Insert clock here lol (with the extra stuff at the bottom)</p>
+                            </div>
+                            <p><b>Next,</b> calculate the subtotals shown by each circle.</b></p>
+                            <span class="row">
+                                <div class="col-md-1"><b>Sub:</b></div>
+                                <div class="col-md-3" id="sub-3-0-second">###</div>
+                                <div class="col-md-1">+</div>
+                                <div class="col-md-3" id="sub-3-0-fist">###</div>
+                                <div class="col-md-1">+</div>
+                                <div class="col-md-3" id="sub-3-0-unit">###</div>
+                            </span>
+                            <p><b>Finally,</b> add up the subtotals to calculate the total in base 10</p>
+                            <div class="total">
+                                <span>
+                                    <b>Total:</b>
+                                    <span id="3-0-total">###</span>
+                                    <b>seconds</b>
+                                </span>
+                            </div>
+                            <div class="section-footer">
+                                <p class="text-center">Next</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="navigation" class="col-md-4 rightcol">
+                <div class="border-right">
+                    <h1>COVERING THE BASICS OF BASES</h1>
+                    <h3>Created by Jackie, Louis, and Shutong</h3>
+                </div>
+            </div>
+        </span>
+        <script src="clock.js"> </script>
+    </div>
+</body>
+
+</html>
