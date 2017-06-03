@@ -1,0 +1,52 @@
+body {
+	background: linear-gradient(to bottom, #9ab3ac , #d0f8e8);
+	overflow: hidden;
+	height: 100%;
+	position: relative;
+}
+
+.title {
+	margin: 20px;
+	margin-bottom: 40px;
+	font-family: Quicksand;
+	font-size: 50px;
+	font-weight: 400;
+	color: #ffffff;
+}
+
+.firstrow {
+	height: 30px;
+	margin: 20px;
+	margin-top: 20px;
+	margin-bottom: 60px;
+	font-family: 'Raleway';
+	font-size: 20px;
+	color: #265649;
+	font-weight: 600;
+}
+
+.content {
+	margin: 20px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	font-family: 'Raleway';
+	font-size: 20px;
+	color: #ffffff;	
+}
+
+.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.numbers {
+	position: fixed;
+	top: 70%;
+	text-align: center;
+	width: 100%;
+	font-family: Quicksand;
+	font-size: 200px;
+	font-weight: 400;
+	color: #ffffff;
+	z-index: 10;
+}
