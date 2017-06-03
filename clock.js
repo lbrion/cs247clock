@@ -156,7 +156,7 @@ function graph(data, index) {
   var circle = svg.append("circle")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", radius+1);
+    .attr("r", radius+2);
 
   //addTicks(BASE, svg);
 
@@ -341,7 +341,7 @@ function setBackground(index) {
     var selected = "#clock" + i;
     var svg = d3.select(selected).selectAll("svg");
     if (i === parseInt(index)) {
-      svg.attr("style", "background: #d3d3d3;");
+      svg.attr("style", "background: #ebfcf6;");
     } else {
       svg.attr("style", "background: white;");
     }
