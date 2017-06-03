@@ -32,7 +32,7 @@ graph(input[0], "2");
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
       lastKeyUpAt = new Date();
-      flag = false; 
+      flag = true; 
     }
 });
 
@@ -105,10 +105,10 @@ d3.select("body")
               svg = d3.select(selected).selectAll("svg");
               goBackByOne(svg, input[0], current_clock-2);
             }
-          }, myDuration + 15);
+          }, myDuration*2 + 25);
         }
        }
-    }, myDuration + 15);
+    }, myDuration*2 + 25);
   }
 });
 
@@ -320,19 +320,29 @@ function setBackground(index) {
 
 function goBackByOne(svg, data, clock_index) {
   var obj = {};
-  if (current_index[clock_index] == 0) {         
-    current_index[clock_index] = BASE;
-    temp = current_index[clock_index];
+  if (current_index[clock_index] == 0) { 
+    var g = svg.selectAll("g");
+    g.selectAll("path").remove();
+    switchToIndex(BASE, g, input[0]);
+    current_index[clock_index] = 0;  
+    temp = current_index[clock_index]
     obj["key"] = index_key[temp];
     obj["values"] = [data[temp*2], data[temp*2+1]];
-    change(obj, svg, myDuration, "East");
-    setTimeout(function(){            
-      current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
+    change(obj, svg, myDuration, "West");
+    setTimeout(function() {       
+      current_index[clock_index] = BASE;
       temp = current_index[clock_index];
       obj["key"] = index_key[temp];
       obj["values"] = [data[temp*2], data[temp*2+1]];
-      change(obj, svg, myDuration, "East");
-    }, myDuration + 10);
+      change(obj, svg, 0, "East");
+      setTimeout(function(){            
+        current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
+        temp = current_index[clock_index];
+        obj["key"] = index_key[temp];
+        obj["values"] = [data[temp*2], data[temp*2+1]];
+        change(obj, svg, myDuration, "East");
+      }, myDuration + 10);
+    }, myDuration+10);
   } else {          
     current_index[clock_index] = (current_index[clock_index] + BASE - 1) % BASE;
     temp = current_index[clock_index];
