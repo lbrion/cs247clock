@@ -171,6 +171,10 @@ function setText(id, total_id, start_index, texts, second_texts) {
     selected = "#clock" + i.toString();
     d3.select(id).selectAll(selected).selectAll("tspan").remove();
     textElements = d3.select(id).selectAll(selected).selectAll("text");
+    if (textElements) {
+      d3.select(id).selectAll(selected).selectAll("g").append("text");
+      textElements = d3.select(id).selectAll(selected).selectAll("g").selectAll("text");
+    }
     textElements
       .append("tspan")
         .attr("class", ".current")
@@ -211,16 +215,14 @@ function graph(input, data, index, BASE, flag) {
     .attr("r", radius+2);
 
   if (flag) {
-    addTicks(BASE, svg, "000000");
-  } else {
-    addTicks(BASE, svg, "#ffffff");
+    addTicks(BASE, svg);
   }
 
   var drag = setdrag();
   svg.call(drag);
   switchToIndex(0, svg, data);
 
-  function addTicks(base, svg, color) {
+  function addTicks(base, svg) {
     var radians = 0.0174532925;  
     svg.selectAll('.hour-label').remove();
     svg.selectAll('.hour-label')
@@ -229,13 +231,12 @@ function graph(input, data, index, BASE, flag) {
       .append('text')
       .attr('class', 'hour-label')
       .attr('text-anchor','middle')
-      .attr("fill", color)
       .attr('x',function(d){                
-        var x = (radius+12) * Math.sin(d * 360.0 / base * radians);
+        var x = (radius+10) * Math.sin(d * 360.0 / base * radians);
         return x;
       })
       .attr('y',function(d){
-        var y = -(radius+12) * Math.cos(d * 360.0 / base * radians);
+        var y = -(radius+10) * Math.cos(d * 360.0 / base * radians);
         return y+5;
       })
       .text(function(d){
