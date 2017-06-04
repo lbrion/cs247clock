@@ -213,3 +213,7 @@ h3 {
 .instructions {
   background-color: #EBFCF6;
 }
+
+.instructions p{
+  font-size: 15px;
+}
