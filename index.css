@@ -150,8 +150,6 @@ h3 {
   color: #2ec186;
 }
 
-.total {
-  margin: 20px;
-  margin-top: 50px;
-  margin-bottom: 100px;
+.divider {
+  border-top: solid 1px black;
 }
