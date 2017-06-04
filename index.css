@@ -153,3 +153,8 @@ h3 {
 .divider {
   border-top: solid 1px black;
 }
+
+.text1-1 p {
+  margin-top: 10px;
+  font-size: 15px;
+}
