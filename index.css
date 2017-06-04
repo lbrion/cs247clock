@@ -97,7 +97,7 @@
   background-color: white;
 }
 
-body {
+body, html {
    width: 100%;
    margin: 0;
    height: 100%;
@@ -105,7 +105,7 @@ body {
 
 .main {
     width: 100%;
-    min-height: 100vh;
+    min-height: 100%;
     background: white; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(#D3DDDA, #EBFCF6); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(#D3DDDA, #EBFCF6); /* For Opera 11.1 to 12.0 */
@@ -117,19 +117,27 @@ body {
   font-family: "Quicksand", Arial, Sans-serif;
   font-size: 100px;
   color: #FFFFFF;  
+  margin-bottom: -37px;
 }
 
 .top-navigation a {
-  color: #525153;
-}
-
-.top-navigation a .selected {
   color: #FFFFFF;
 }
 
+.top-navigation a:hover{
+  color: #525153;
+  text-decoration: none;
+}
+
+.top-navigation .selected a{
+  color: #525153;
+}
+
 body {
+  height: 100%;
   width: 100%;
 }
+
 h3 {
   margin-top: 40px;
 }
@@ -149,7 +157,7 @@ h3 {
 }
 
 #progress-link a {
-  color: #2ec186;
+  color: #2EC186;
 }
 
 .divider {
