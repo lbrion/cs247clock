@@ -323,8 +323,9 @@ function graph(input, data, index, BASE, flag) {
       if (d3.event.x < center.x) {
         degree = 360 - degree;
       } 
-      var index = degree * 1.0 / (360.0 / BASE);
-      switchToIndex(Math.round(index));
+      var current_set = Math.floor(current_clock / 3);
+      var index = degree * 1.0 / (360.0 / BASE[current_set]);
+      switchToIndex(Math.round(index), svg, data);
     }
 
     function dragended(d) {
