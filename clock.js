@@ -15,13 +15,13 @@ var pie = d3.pie()
 var current_index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
 var lastKeyUpAt = 0;
+var current_clock = 2;
 
 var arc = d3.arc()
 .innerRadius(0)
 .outerRadius(radius);
 
 var BASE = [60.0, 10.0, 5.0, 5.0];
-var current_clock = 2;
 var input = [];
 input[0] = generateInput(BASE[0]);
 
@@ -42,11 +42,15 @@ input[2] = generateInput(BASE[2]);
 graph(input[2], input[2][0], "6", BASE[2], true);
 graph(input[2], input[2][0], "7", BASE[2], true);
 graph(input[2], input[2][0], "8", BASE[2], true);
+current_base = Math.floor(BASE[2]).toString();
+setText("#clock-2-0", "2-0-total", 6, ["0 × " + current_base + "\u00B2", "0 × " + current_base + "\u00B9", "0 × " + current_base + "\u2070"]);
+setText("#clock-3-0", "", 6, ["_ × " + current_base + "\u00B2", "_ × " + current_base + "\u00B9", "_ × " + current_base + "\u2070"]);
 
 input[3] = generateInput(BASE[3]);
 graph(input[3], input[3][0], "9", BASE[3], true);
 graph(input[3], input[3][0], "10", BASE[3], true);
 graph(input[3], input[3][0], "11", BASE[3], true);
+setText("#clock-4-0", "4-0-total", 9, [0, 0, 0], undefined, 10);
 
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
@@ -72,11 +76,11 @@ d3.select("body")
   } else if (d3.event.keyCode === 38) {
     // up arrow
     d3.event.preventDefault();
-    if (current_index[current_set*3] === base-1 && current_clock === 0) {
+    if (current_index[current_set*3] === base-1 && current_clock === current_set*3) {
       return;
-    } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_clock === 1) {
+    } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_clock === current_set*3+1) {
       return;
-    } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_index[current_set*3+2] == base-1 && current_clock === 2) {
+    } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_index[current_set*3+2] == base-1 && current_clock === current_set*3+2) {
       return;
     }
     var selected = "#clock" + current_clock.toString();
@@ -120,6 +124,15 @@ d3.select("body")
         current_index[4].toString() + " × 10\u00B9",
         current_index[5].toString() + " × 10\u2070",
       ]);
+      current_base = Math.floor(BASE[2]).toString();
+      setText("#clock-2-0", "2-0-total", 6, [
+        current_index[6].toString() + " × " + current_base + "\u00B2",
+        current_index[7].toString() + " × " + current_base + "\u00B9",
+        current_index[8].toString() + " × " + current_base + "\u2070",
+      ]);
+      setText("#clock-4-0", "4-0-total", 9, [
+        current_index[9], current_index[10], current_index[11]
+      ], undefined, 10);
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
@@ -184,11 +197,20 @@ d3.select("body")
         current_index[4].toString() + " × 10\u00B9",
         current_index[5].toString() + " × 10\u2070",
       ]);
+      current_base = Math.floor(BASE[2]).toString();
+      setText("#clock-2-0", "2-0-total", 6, [
+        current_index[6].toString() + " × " + current_base + "\u00B2",
+        current_index[7].toString() + " × " + current_base + "\u00B9",
+        current_index[8].toString() + " × " + current_base + "\u2070",
+      ]);
+      setText("#clock-4-0", "4-0-total", 9, [
+        current_index[9], current_index[10], current_index[11]
+      ], undefined, 10);
     }, myDuration*2 + 25);
   }
 });
 
-function setText(id, total_id, start_index, texts, second_texts) {
+function setText(id, total_id, start_index, texts, second_texts, subscript) {
   var current_set = Math.floor(current_clock / 3);
   for (i = start_index; i < start_index+3; i++){
     selected = "#clock" + i.toString();
@@ -222,7 +244,10 @@ function setText(id, total_id, start_index, texts, second_texts) {
   }
   var total = document.getElementById(total_id);
   if (total) {
-    total.innerHTML = current_index[start_index]*BASE[current_set]*BASE[current_set] + current_index[start_index+1]*BASE[current_set] + current_index[start_index+2] 
+    total.innerHTML = current_index[start_index]*BASE[current_set]*BASE[current_set] + current_index[start_index+1]*BASE[current_set] + current_index[start_index+2]
+  }
+  if (subscript) {
+    total.innerHTML += "<sub>" + subscript + "</sub>"
   }
 }
 
@@ -440,7 +465,7 @@ function goBackByOne(svg, data, clock_index) {
   if (current_index[clock_index] === 0) { 
     var g = svg.selectAll("g");
     g.selectAll("path").remove();
-    switchToIndex(BASE[current_set], g, input[0]);
+    switchToIndex(BASE[current_set], g, input[current_set][0]);
     current_index[clock_index] = 0;  
     temp = current_index[clock_index]
     obj["key"] = index_key[temp];
@@ -461,7 +486,7 @@ function goBackByOne(svg, data, clock_index) {
       }, myDuration + 10);
     }, myDuration+10);
   } else {          
-    current_index[clock_index] = (current_index[clock_index] + BASE[current_set] - 1) % BASE;
+    current_index[clock_index] = (current_index[clock_index] + BASE[current_set] - 1) % BASE[current_set];
     temp = current_index[clock_index];
     obj["key"] = index_key[temp];
     obj["values"] = [data[temp*2], data[temp*2+1]];
@@ -585,23 +610,52 @@ function isElementOutViewport (el) {
 }
 
 window.onscroll = function() {
-  var clock_set_0 = document.getElementById("clock-1-0");
-  var clock_set_1 = document.getElementById("clock-1-1");
-  var clock_set_2 = document.getElementById("clock-1-2");
-  var clock_set_3 = document.getElementById("clock-2-0");
-  var clock_set_4 = document.getElementById("clock-3-0");
-  var clock_set_5 = document.getElementById("clock-5-0");
-  if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
-    current_clock = 2;
-    setBackground(2); 
-  } else if (!isElementOutViewport(clock_set_2)) {
-    current_clock = 5; 
-    setBackground(5); 
-  } else if (!isElementOutViewport(clock_set_3) || !isElementOutViewport(clock_set_4)) {
-    current_clock = 8;
-    setBackground(8);  
-  } else if (!isElementOutViewport(clock_set_5)) {
-    current_clock = 11; 
-    setBackground(11); 
-  } 
+  try {
+    var clock_set_0 = document.getElementById("clock-1-0");
+    var clock_set_1 = document.getElementById("clock-1-1");
+    var clock_set_2 = document.getElementById("clock-1-2");
+    if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
+      current_clock = 2;
+      setBackground(2); 
+    } else if (!isElementOutViewport(clock_set_2)) {
+      current_clock = 5; 
+      setBackground(5);
+    }
+  } catch(err){}
+};
+
+window.onload = function() {
+  try {
+    var clock_set_0 = document.getElementById("clock-1-0");
+    var clock_set_1 = document.getElementById("clock-1-1");
+    var clock_set_2 = document.getElementById("clock-1-2");
+    if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
+      current_clock = 2;
+      setBackground(2); 
+    } else if (!isElementOutViewport(clock_set_2)) {
+      current_clock = 5; 
+      setBackground(5);
+    }
+  } catch(err){}
+  try {
+    var clock_set_3 = document.getElementById("clock-2-0");
+    if (!isElementOutViewport(clock_set_3)) {
+      current_clock = 8; 
+      setBackground(8);
+    }
+  } catch(err){}
+  try {
+    var clock_set_4 = document.getElementById("clock-3-0");
+    if (!isElementOutViewport(clock_set_4)) {
+      current_clock = 8; 
+      setBackground(8);
+    }
+  } catch(err){}
+  try {
+    var clock_set_5 = document.getElementById("clock-4-0");
+    if (!isElementOutViewport(clock_set_5)) {
+      current_clock = 11; 
+      setBackground(11);
+    }
+  } catch(err){}
 };
