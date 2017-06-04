@@ -81,6 +81,9 @@ body {
     background: linear-gradient(#D3DDDA, #EBFCF6); /* Standard syntax (must be last) */
 }
 
+.top-navigation .row{
+  background: transparent;
+}
 body {
   width: 100%;
 }
