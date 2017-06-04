@@ -77,8 +77,11 @@
 .subsection p {
   font-family: "Open-Sans", Arial, Sans-serif;
   font-size: 20px;
-  border-left: solid #728F87;
   padding-left: 20px;
+}
+
+#intro p {
+  border-left: solid #728F87;
 }
 
 .subsection {
@@ -123,6 +126,13 @@ h3 {
   margin-left: 20px;
   margin-top: 20px;
 }
+
 #progress-link a {
   color: #2ec186;
+}
+
+.total {
+  margin: 20px;
+  margin-top: 50px;
+  margin-bottom: 100px;
 }
