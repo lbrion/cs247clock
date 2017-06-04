@@ -21,7 +21,7 @@ var arc = d3.arc()
 .innerRadius(0)
 .outerRadius(radius);
 
-var BASE = [60.0, 10.0, 3.0, 5.0];
+var BASE = [60.0, 10.0, 3.0, 3.0];
 var input = [];
 input[0] = generateInput(BASE[0]);
 

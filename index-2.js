@@ -2,6 +2,9 @@ array = [3, 4, 5, 6, 7, 8, 9]
 jQuery.each(array, function(index) {
   var id = "#selector-"+array[index];
   $(id).click(function() {
+  	current_index[6] = 0;
+  	current_index[7] = 0;
+  	current_index[8] = 0;
   	BASE[2] = array[index];
   	input[2] = generateInput(BASE[2]);
 	graph(input[2], input[2][0], "6", BASE[2], true);
