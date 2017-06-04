@@ -187,3 +187,14 @@ h3 {
   display:table;
   margin-top: 20px;
 }
+
+.base-selector span{
+  padding: 2px;
+  color: #2EC186;
+  border: solid 1px #FFFFFF;
+}
+
+.base-selector .selected, .base-selector span:hover {
+  padding: 2px;
+  border: solid 1px #2EC186;
+}
