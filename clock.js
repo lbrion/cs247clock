@@ -66,6 +66,7 @@ d3.select("body")
   }
   if (d3.event.keyCode === 37) {
     // left arrow
+    d3.event.preventDefault();
     current_clock = current_set * 3 + (current_clock + 3 - 1) % 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 38) {
@@ -110,9 +111,19 @@ d3.select("body")
         current_index[1].toString() + " × 60\u00B9",
         current_index[2].toString() + " × 60\u2070",
       ]);
+      setText("#clock-1-2", "1-2-total", 3, [
+        current_index[3].toString() + " hundreds  ",
+        current_index[4].toString() + " tens",
+        current_index[5].toString() + " ones",
+      ], [
+        current_index[3].toString() + " × 10\u00B2",
+        current_index[4].toString() + " × 10\u00B9",
+        current_index[5].toString() + " × 10\u2070",
+      ]);
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
+    d3.event.preventDefault();
     current_clock = (current_clock + 1) % 3 + current_set * 3;
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
@@ -164,11 +175,21 @@ d3.select("body")
         current_index[1].toString() + " × 60\u00B9",
         current_index[2].toString() + " × 60\u2070",
       ]);
+      setText("#clock-1-2", "1-2-total", 3, [
+        current_index[3].toString() + " hundreds  ",
+        current_index[4].toString() + " tens",
+        current_index[5].toString() + " ones",
+      ], [
+        current_index[3].toString() + " × 10\u00B2",
+        current_index[4].toString() + " × 10\u00B9",
+        current_index[5].toString() + " × 10\u2070",
+      ]);
     }, myDuration*2 + 25);
   }
 });
 
 function setText(id, total_id, start_index, texts, second_texts) {
+  var current_set = Math.floor(current_clock / 3);
   for (i = start_index; i < start_index+3; i++){
     selected = "#clock" + i.toString();
     d3.select(id).selectAll(selected).selectAll("tspan").remove();
@@ -199,7 +220,10 @@ function setText(id, total_id, start_index, texts, second_texts) {
           .style("text-anchor", "middle");
     }
   }
-  document.getElementById(total_id).innerHTML = current_index[start_index]*BASE*BASE + current_index[start_index+1]*BASE + current_index[start_index+2] 
+  var total = document.getElementById(total_id);
+  if (total) {
+    total.innerHTML = current_index[start_index]*BASE[current_set]*BASE[current_set] + current_index[start_index+1]*BASE[current_set] + current_index[start_index+2] 
+  }
 }
 
 function graph(input, data, index, BASE, flag) {
@@ -436,7 +460,7 @@ function goBackByOne(svg, data, clock_index) {
       }, myDuration + 10);
     }, myDuration+10);
   } else {          
-    current_index[clock_index] = (current_index[clock_index] + BASE[current_set] - 1) % BASE[current_set];
+    current_index[clock_index] = (current_index[clock_index] + BASE[current_set] - 1) % BASE;
     temp = current_index[clock_index];
     obj["key"] = index_key[temp];
     obj["values"] = [data[temp*2], data[temp*2+1]];
@@ -559,7 +583,7 @@ function isElementOutViewport (el) {
     return rect.bottom < 0 || rect.right < 0 || rect.left > window.innerWidth || rect.top > window.innerHeight;
 }
 
-document.getElementById("content").onscroll = function() {
+window.onscroll = function() {
   var clock_set_0 = document.getElementById("clock-1-0");
   var clock_set_1 = document.getElementById("clock-1-1");
   var clock_set_2 = document.getElementById("clock-1-2");
