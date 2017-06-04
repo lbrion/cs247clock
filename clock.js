@@ -627,20 +627,22 @@ function isElementOutViewport (el) {
     return rect.bottom < 0 || rect.right < 0 || rect.left > window.innerWidth || rect.top > window.innerHeight;
 }
 
-window.onscroll = function() {
-  try {
-    var clock_set_0 = document.getElementById("clock-1-0");
-    var clock_set_1 = document.getElementById("clock-1-1");
-    var clock_set_2 = document.getElementById("clock-1-2");
-    if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
-      current_clock = 2;
-      setBackground(2); 
-    } else if (!isElementOutViewport(clock_set_2)) {
-      current_clock = 5; 
-      setBackground(5);
-    }
-  } catch(err){}
-};
+try{
+  document.getElementById("subsection1.1").onscroll = function() {
+    try {
+      var clock_set_0 = document.getElementById("clock-1-0");
+      var clock_set_1 = document.getElementById("clock-1-1");
+      var clock_set_2 = document.getElementById("clock-1-2");
+      if (!isElementOutViewport(clock_set_0) || !isElementOutViewport(clock_set_1)) {
+        current_clock = 2;
+        setBackground(2); 
+      } else if (!isElementOutViewport(clock_set_2)) {
+        current_clock = 5; 
+        setBackground(5);
+      }
+    } catch(err){}
+  };  
+} catch(err){}
 
 window.onload = function() {
   try {
