@@ -58,6 +58,15 @@ if (total) {
     + "<sub>" + BASE[3] + "</sub>"
 }
 
+array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+jQuery.each(array, function(index) {
+  var id = "#clock"+index;
+  $(id).hover(function() {
+    current_clock = index;
+    setBackground(index);
+  });
+});
+
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
       lastKeyUpAt = new Date();
