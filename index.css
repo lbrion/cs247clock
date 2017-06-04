@@ -10,8 +10,13 @@
    position: relative;
    top: 0%;
    left: 50%;  */
-   overflow-y: scroll;
+   overflow: hidden;
    height: 100%;
+}
+
+.subsection {
+  overflow-y: scroll;
+  height: 700px;
 }
 
 .border-left {
