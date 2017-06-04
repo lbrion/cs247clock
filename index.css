@@ -38,15 +38,19 @@
 }
 
 .border-right h1 {
-   font-family: "Quicksand", Arial, Sans-serif;
-   font-size: 40px;
-   color: #FFFFFF;
+  font-family: "Quicksand", Arial, Sans-serif;
+  font-size: 60px;
+  color: #FFFFFF;
+  margin-left: 20px;
 }
 
 .border-right h3 {
-   font-family: "Raleway", Arial, Sans-serif;
-   font-size: 20px;
-   color: #FFFFFF;
+  font-family: "Raleway", Arial, Sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #FFFFFF;
+  margin-left: 20px;
+  margin-top: 120px;
 }
 
 .section-header {
@@ -54,6 +58,7 @@
    font-family: "Quicksand", Arial, Sans-serif;
    font-size: 35px;
    color: #FFFFFF;
+   height: 80px;
 }
 
 .section-footer {
@@ -68,17 +73,26 @@
 
 .subsection h2 {
    font-family: "Open-Sans", Arial, Sans-serif;
-   font-size: 35px;
+   font-size: 25px;
    color: #728F87;
+   margin-top: 60px;
+   margin-bottom: 40px;
+   font-weight: 600;
 }
 
 .subsection p {
-   font-family: "Open-Sans", Arial, Sans-serif;
-   font-size: 20px;
+  font-family: "Open-Sans", Arial, Sans-serif;
+  font-size: 20px;
+  padding-left: 20px;
+}
+
+#intro p {
+  border-left: solid #728F87;
 }
 
 .subsection {
   padding: 30px;
+  padding-top: 0px;
 }
 
 body {
@@ -114,7 +128,30 @@ body {
 body {
   width: 100%;
 }
-
 h3 {
   margin-top: 40px;
+}
+
+.title {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#progress-link {
+  font-family: "Raleway", Arial, Sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+#progress-link a {
+  color: #2ec186;
+}
+
+.total {
+  margin: 20px;
+  margin-top: 50px;
+  margin-bottom: 100px;
 }
