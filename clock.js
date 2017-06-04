@@ -238,13 +238,14 @@ function setText(id, total_id, start_index, texts, second_texts, subscript) {
       d3.select(id).selectAll(selected).selectAll("g").append("text");
       textElements = d3.select(id).selectAll(selected).selectAll("g").selectAll("text");
     }
+    textElements.selectAll("tspan").remove();
     textElements
       .append("tspan")
         .attr("class", ".current")
         .attr("x", 0)
         .attr("y", height/2+5)
-        .attr("font-size", "1rem")
-        .attr("font-weight", "normal")
+        .attr("font-size", "15px")
+        .attr("font-family", "Open-Sans, Arial, Sans-serif")
         .text(texts[i - start_index])
         .style("text-anchor", "middle");
     if (second_texts) {
@@ -254,8 +255,8 @@ function setText(id, total_id, start_index, texts, second_texts, subscript) {
           .attr('x', 0)
           .attr("y", height/2+5)
           .attr("dy", 20)
-          .attr("font-size", "1rem")
-          .attr("font-weight", "normal")
+          .attr("font-size", "15px")
+          .attr("font-family", "Open-Sans, Arial, Sans-serif")
           .text(second_texts[i - start_index])
           .style("text-anchor", "middle");
     }
@@ -275,10 +276,10 @@ function graph(input, data, index, BASE, flag) {
   var svg = d3.selectAll(selected).selectAll("svg")
     .data(input)
     .enter().append("svg")
-    .attr("width", width + margin)
+    .attr("width", width + margin * 2)
     .attr("height", height + margin * 2)
     .append("g")
-    .attr("transform", "translate(" + (width / 2 + margin / 2) + "," + (height / 2 + margin) + ")");
+    .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2 + margin) + ")");
 
   var circle = svg.append("circle")
     .attr("cx", 0)

@@ -64,6 +64,7 @@
   font-family: "Raleway", Arial, Sans-serif;
   font-size: 20px;
   color: #2EC186;
+  font-weight: 600;
 }
 
 .section-footer a {
@@ -164,10 +165,13 @@ h3 {
   margin: 20px;
   margin-top: 60px;
   margin-bottom: 100px;
+  font-family: "Open-Sans", Arial, Sans-serif;
+  font-weight: 600;
+  font-size: 20px; 
 }
 
-.text-right {
-  text-align: right;
+.right-descript {
+  float: right;
 }
 
 .center-descript {
