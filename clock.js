@@ -51,6 +51,12 @@ graph(input[3], input[3][0], "9", BASE[3], true);
 graph(input[3], input[3][0], "10", BASE[3], true);
 graph(input[3], input[3][0], "11", BASE[3], true);
 setText("#clock-4-0", "4-0-total", 9, [0, 0, 0], undefined, 10);
+var total = document.getElementById("4-0-notation");
+if (total) {
+  total.innerHTML = "<b>" + current_index[9]*BASE[3]*BASE[3] 
+    + current_index[10]*BASE[3] + current_index[11]
+    + "<sub>" + BASE[3] + "</sub>"
+}
 
 d3.select("body").on('keyup', function() {
     if (d3.event.keyCode === 40) { 
@@ -133,6 +139,12 @@ d3.select("body")
       setText("#clock-4-0", "4-0-total", 9, [
         current_index[9], current_index[10], current_index[11]
       ], undefined, 10);
+      var total = document.getElementById("4-0-notation");
+      if (total) {
+        total.innerHTML = "<b>" + current_index[9].toString()
+          + current_index[10].toString() + current_index[11].toString()
+          + "<sub>" + BASE[3] + "</sub>"
+      }
     }, myDuration*2 + 25);
   } else if (d3.event.keyCode === 39) {
     // right arrow
@@ -206,6 +218,12 @@ d3.select("body")
       setText("#clock-4-0", "4-0-total", 9, [
         current_index[9], current_index[10], current_index[11]
       ], undefined, 10);
+      var total = document.getElementById("4-0-notation");
+      if (total) {
+        total.innerHTML = "<b>" + current_index[9].toString()
+          + current_index[10].toString() + current_index[11].toString()
+          + "<sub>" + BASE[3] + "</sub>"
+      }
     }, myDuration*2 + 25);
   }
 });
@@ -246,7 +264,7 @@ function setText(id, total_id, start_index, texts, second_texts, subscript) {
   if (total) {
     total.innerHTML = current_index[start_index]*BASE[current_set]*BASE[current_set] + current_index[start_index+1]*BASE[current_set] + current_index[start_index+2]
   }
-  if (subscript) {
+  if (total && subscript) {
     total.innerHTML += "<sub>" + subscript + "</sub>"
   }
 }
