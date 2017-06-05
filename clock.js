@@ -290,9 +290,9 @@ function graph(input, data, index, BASE, flag) {
     .data(input)
     .enter().append("svg")
     .attr("width", width + margin * 2)
-    .attr("height", height + margin * 2)
+    .attr("height", height + margin)
     .append("g")
-    .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2 + margin) + ")");
+    .attr("transform", "translate(" + (width / 2 + margin) + "," + (height / 2) + ")");
 
   var circle = svg.append("circle")
     .attr("cx", 0)
