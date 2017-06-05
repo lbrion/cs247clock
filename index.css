@@ -219,6 +219,7 @@ h3 {
 }
 
 .instructions p{
+  margin-top: 40px; 
   font-size: 15px;
 }
 
@@ -226,4 +227,9 @@ input {
   padding: 4px;
   border: solid 1px red;
   width: 50px; 
+}
+
+img {
+  margin-left: 25px;
+  height: 150px;
 }
