@@ -32,32 +32,6 @@ graph(input[0], input[0][0], "2", BASE[0], false);
 setText("#clock-1-0", "1-0-total", 0, ["0 hours", "0 minutes", "0 seconds"]);
 setText("#clock-1-1", "1-1-total", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
 setBackground(current_clock);
-animation();
-
-function animation() {
-  var selected = "#clock0";
-  var svg = d3.selectAll(selected).selectAll("svg");
-  switchToIndex(5, svg, input[0][0]);
-  selected = "#clock1";
-  svg = d3.selectAll(selected).selectAll("svg");
-  switchToIndex(25, svg, input[0][0]);
-  selected = "#clock2";
-  svg = d3.selectAll(selected).selectAll("svg");
-  switchToIndex(55, svg, input[0][0]);
-  var x = 0;
-  var intervalID = setInterval(function() {
-    if (x === 0) {
-      current_index[0] = 5;
-      current_index[1] = 25;
-      current_index[2] = 55;
-    }
-    uparrowFunc();
-    if (++x === 20) {
-      window.clearInterval(intervalID);
-      locked = true;
-    }
-  }, myDuration+10);
-}
 
 input[1] = generateInput(BASE[1]);
 graph(input[1], input[1][0], "3", BASE[1], true);
