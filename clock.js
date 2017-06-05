@@ -2,7 +2,7 @@
 var myDuration = 300;
 var firstTime = true;
 var flag = true,
-width = 150,
+width = 187,
 height = 250,
 margin = 30,
 border = 2,
