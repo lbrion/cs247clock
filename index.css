@@ -68,6 +68,7 @@
   font-size: 20px;
   color: #2EC186;
   font-weight: 600;
+  margin-top: 30px;
 }
 
 .section-footer a {
@@ -216,4 +217,10 @@ h3 {
 
 .instructions p{
   font-size: 15px;
+}
+
+input {
+  padding: 4px;
+  border: solid 1px red;
+  width: 50px; 
 }

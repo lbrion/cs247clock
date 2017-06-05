@@ -18,10 +18,12 @@ function animation() {
       current_index[2] = 55;
       locked = false;
     }
+    if (current_index[0] > BASE[0] || current_index[1] > BASE[0] || current_index[0] > BASE[0])
+      return;
     uparrowFunc();
-    if (++x === 20 ) {
+    if (++x === 10 ) {
       window.clearInterval(intervalID);
       locked = true;
     }
-  }, myDuration+10);
+  }, myDuration*3+20);
 }

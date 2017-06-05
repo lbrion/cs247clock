@@ -141,6 +141,7 @@ function uparrowFunc() {
         + current_index[10].toString() + current_index[11].toString()
         + "<sub>" + BASE[3] + "</sub>"
     }
+    checkCorrectness();
   }, myDuration*2 + 25);  
 }
 
@@ -171,13 +172,6 @@ d3.select("body")
     setBackground(current_clock);
   } else if (d3.event.keyCode === 40) {
     // down arrow   
-    d3.event.preventDefault();
-    var keyDownAt = new Date();
-    setTimeout(function() {
-        if (+keyDownAt > +lastKeyUpAt){
-          flag = false;
-        }
-    }, 500);
 
     if (current_index[current_set*3] === 0 && current_clock === current_set*3) {
       return;
@@ -242,6 +236,7 @@ d3.select("body")
           + current_index[10].toString() + current_index[11].toString()
           + "<sub>" + BASE[3] + "</sub>"
       }
+      checkCorrectness();
     }, myDuration*2 + 25);
   }
 });
@@ -698,3 +693,30 @@ window.onload = function() {
     }
   } catch(err){}
 };
+
+function checkCorrectness() {
+  var total = current_index[6]*BASE[2]*BASE[2] + current_index[7]*BASE[2] + current_index[8]
+  if (total.toString() !== $('input[name=total]').val()){
+    $('input[name=total]').css("border-color", "red");
+  } else {
+    $('input[name=total]').css("border-color", "#2EC186");
+  } 
+  total = current_index[6]*BASE[2]*BASE[2];
+  if (total.toString() !== $('input[name=subtotal1]').val()){
+    $('input[name=subtotal1]').css("border-color", "red");
+  } else {
+    $('input[name=subtotal1]').css("border-color", "#2EC186");
+  } 
+  total = current_index[7]*BASE[2];
+  if (total.toString() !== $('input[name=subtotal2]').val()){
+    $('input[name=subtotal2]').css("border-color", "red");
+  } else {
+    $('input[name=subtotal2]').css("border-color", "#2EC186");
+  } 
+  total = current_index[8];
+  if (total.toString() !== $('input[name=subtotal3]').val()){
+    $('input[name=subtotal3]').css("border-color", "red");
+  } else {
+    $('input[name=subtotal3]').css("border-color", "#2EC186");
+  }
+}
