@@ -16,6 +16,7 @@ var current_index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var index_key = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
 var lastKeyUpAt = 0;
 var current_clock = 2;
+var locked = false;
 
 var arc = d3.arc()
 .innerRadius(0)
@@ -31,6 +32,32 @@ graph(input[0], input[0][0], "2", BASE[0], false);
 setText("#clock-1-0", "1-0-total", 0, ["0 hours", "0 minutes", "0 seconds"]);
 setText("#clock-1-1", "1-1-total", 0, ["0 hours", "0 minutes", "0 seconds"], ["0 × 60\u00B2", "0 × 60\u00B9", "0 × 60\u2070"]);
 setBackground(current_clock);
+animation();
+
+function animation() {
+  var selected = "#clock0";
+  var svg = d3.selectAll(selected).selectAll("svg");
+  switchToIndex(5, svg, input[0][0]);
+  selected = "#clock1";
+  svg = d3.selectAll(selected).selectAll("svg");
+  switchToIndex(25, svg, input[0][0]);
+  selected = "#clock2";
+  svg = d3.selectAll(selected).selectAll("svg");
+  switchToIndex(55, svg, input[0][0]);
+  var x = 0;
+  var intervalID = setInterval(function() {
+    if (x === 0) {
+      current_index[0] = 5;
+      current_index[1] = 25;
+      current_index[2] = 55;
+    }
+    uparrowFunc();
+    if (++x === 20) {
+      window.clearInterval(intervalID);
+      locked = true;
+    }
+  }, myDuration+10);
+}
 
 input[1] = generateInput(BASE[1]);
 graph(input[1], input[1][0], "3", BASE[1], true);
@@ -74,8 +101,79 @@ d3.select("body").on('keyup', function() {
     }
 });
 
+function uparrowFunc() {
+  var current_set = Math.floor(current_clock / 3);
+  var base = BASE[current_set];
+  if (current_index[current_set*3] === base-1 && current_clock === current_set*3) {
+    return;
+  } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_clock === current_set*3+1) {
+    return;
+  } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_index[current_set*3+2] == base-1 && current_clock === current_set*3+2) {
+    return;
+  }
+  var selected = "#clock" + current_clock.toString();
+  var svg = d3.selectAll(selected).selectAll("svg");
+  incrementByOne(svg, input[current_set][0], current_clock);
+  setTimeout(function(){            
+    if (current_index[current_clock] === 0) {
+      if (current_clock !== current_set*3) {
+        selected = "#clock" + (current_clock-1).toString();
+        svg = d3.select(selected).selectAll("svg");
+        incrementByOne(svg, input[current_set][0], current_clock-1);
+        setTimeout(function(){                      
+          if (current_index[current_clock-1] === 0 && current_clock !== current_set*3+1) {
+            selected = "#clock" + (current_clock-2).toString();
+            svg = d3.select(selected).selectAll("svg");
+            incrementByOne(svg, input[current_set][0], current_clock-2);
+          }
+        }, myDuration*2 + 25);
+      }
+    }
+    setText("#clock-1-0", "1-0-total", 0, [
+      current_index[0].toString() + " hours  ",
+      current_index[1].toString() + " minutes",
+      current_index[2].toString() + " seconds",
+    ]);
+    setText("#clock-1-1", "1-1-total", 0, [
+      current_index[0].toString() + " hours  ",
+      current_index[1].toString() + " minutes",
+      current_index[2].toString() + " seconds",
+    ], [
+      current_index[0].toString() + " × 60\u00B2",
+      current_index[1].toString() + " × 60\u00B9",
+      current_index[2].toString() + " × 60\u2070",
+    ]);
+    setText("#clock-1-2", "1-2-total", 3, [
+      current_index[3].toString() + " hundreds  ",
+      current_index[4].toString() + " tens",
+      current_index[5].toString() + " ones",
+    ], [
+      current_index[3].toString() + " × 10\u00B2",
+      current_index[4].toString() + " × 10\u00B9",
+      current_index[5].toString() + " × 10\u2070",
+    ]);
+    current_base = Math.floor(BASE[2]).toString();
+    setText("#clock-2-0", "2-0-total", 6, [
+      current_index[6].toString() + " × " + current_base + "\u00B2",
+      current_index[7].toString() + " × " + current_base + "\u00B9",
+      current_index[8].toString() + " × " + current_base + "\u2070",
+    ]);
+    setText("#clock-4-0", "4-0-total", 9, [
+      current_index[9], current_index[10], current_index[11]
+    ], undefined, 10);
+    var total = document.getElementById("4-0-notation");
+    if (total) {
+      total.innerHTML = "<b>" + current_index[9].toString()
+        + current_index[10].toString() + current_index[11].toString()
+        + "<sub>" + BASE[3] + "</sub>"
+    }
+  }, myDuration*2 + 25);  
+}
+
 d3.select("body")
 .on("keydown", function() {
+  if (!locked)
+    return;
   var current_set = Math.floor(current_clock / 3);
   var base = BASE[current_set];
   if (current_index[current_set*3] >= base 
@@ -91,70 +189,7 @@ d3.select("body")
   } else if (d3.event.keyCode === 38) {
     // up arrow
     d3.event.preventDefault();
-    if (current_index[current_set*3] === base-1 && current_clock === current_set*3) {
-      return;
-    } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_clock === current_set*3+1) {
-      return;
-    } else if (current_index[current_set*3] === base-1 && current_index[current_set*3+1] == base-1 && current_index[current_set*3+2] == base-1 && current_clock === current_set*3+2) {
-      return;
-    }
-    var selected = "#clock" + current_clock.toString();
-    var svg = d3.selectAll(selected).selectAll("svg");
-    incrementByOne(svg, input[current_set][0], current_clock);
-    setTimeout(function(){            
-      if (current_index[current_clock] === 0) {
-        if (current_clock !== current_set*3) {
-          selected = "#clock" + (current_clock-1).toString();
-          svg = d3.select(selected).selectAll("svg");
-          incrementByOne(svg, input[current_set][0], current_clock-1);
-          setTimeout(function(){                      
-            if (current_index[current_clock-1] === 0 && current_clock !== current_set*3+1) {
-              selected = "#clock" + (current_clock-2).toString();
-              svg = d3.select(selected).selectAll("svg");
-              incrementByOne(svg, input[current_set][0], current_clock-2);
-            }
-          }, myDuration*2 + 25);
-        }
-      }
-      setText("#clock-1-0", "1-0-total", 0, [
-        current_index[0].toString() + " hours  ",
-        current_index[1].toString() + " minutes",
-        current_index[2].toString() + " seconds",
-      ]);
-      setText("#clock-1-1", "1-1-total", 0, [
-        current_index[0].toString() + " hours  ",
-        current_index[1].toString() + " minutes",
-        current_index[2].toString() + " seconds",
-      ], [
-        current_index[0].toString() + " × 60\u00B2",
-        current_index[1].toString() + " × 60\u00B9",
-        current_index[2].toString() + " × 60\u2070",
-      ]);
-      setText("#clock-1-2", "1-2-total", 3, [
-        current_index[3].toString() + " hundreds  ",
-        current_index[4].toString() + " tens",
-        current_index[5].toString() + " ones",
-      ], [
-        current_index[3].toString() + " × 10\u00B2",
-        current_index[4].toString() + " × 10\u00B9",
-        current_index[5].toString() + " × 10\u2070",
-      ]);
-      current_base = Math.floor(BASE[2]).toString();
-      setText("#clock-2-0", "2-0-total", 6, [
-        current_index[6].toString() + " × " + current_base + "\u00B2",
-        current_index[7].toString() + " × " + current_base + "\u00B9",
-        current_index[8].toString() + " × " + current_base + "\u2070",
-      ]);
-      setText("#clock-4-0", "4-0-total", 9, [
-        current_index[9], current_index[10], current_index[11]
-      ], undefined, 10);
-      var total = document.getElementById("4-0-notation");
-      if (total) {
-        total.innerHTML = "<b>" + current_index[9].toString()
-          + current_index[10].toString() + current_index[11].toString()
-          + "<sub>" + BASE[3] + "</sub>"
-      }
-    }, myDuration*2 + 25);
+    uparrowFunc();
   } else if (d3.event.keyCode === 39) {
     // right arrow
     d3.event.preventDefault();
