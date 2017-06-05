@@ -16,6 +16,7 @@ function animation() {
       current_index[0] = 5;
       current_index[1] = 25;
       current_index[2] = 55;
+      locked = false;
     }
     uparrowFunc();
     if (++x === 20 ) {
